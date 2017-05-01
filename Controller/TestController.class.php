@@ -11,8 +11,7 @@ use Wxapp\Service\WxappService;
 class TestController extends Base {
     public function index() {
         $wxapp = new WxappService();
-        $res = $wxapp->login();
-        $this->ajaxReturn($res);
+        $wxapp->login();
     }
 
     public function user() {
