@@ -6,6 +6,11 @@ use System\Service\BaseService;
 class UserinfoService extends BaseService {
     const TABLE_NAME = 'WxappUserinfo';
 
+    /**
+     * 更新用户信息
+     * @param $info
+     * @return array
+     */
     static function updateInfo($info) {
         $data = [
             'open_id' => $info['openId'],

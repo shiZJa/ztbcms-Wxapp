@@ -26,3 +26,38 @@ CREATE TABLE `cms_wxapp_sessioninfo` (
   `user_info` varchar(2048) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会话管理用户信息';
+
+-- ----------------------------
+-- 聊天室表
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_wxapp_room`;
+CREATE TABLE `cms_wxapp_room` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `client_id` varchar(128) DEFAULT NULL COMMENT '创建用户的id',
+  `room_name` varchar(64) DEFAULT NULL COMMENT '聊天室名称',
+  `conversation_id` varchar(128) DEFAULT NULL COMMENT '会话id',
+  `create_time` int(11) DEFAULT NULL COMMENT '创建时间',
+  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
+  `master` int(11) DEFAULT '0' COMMENT '是否创建者',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+-- ----------------------------
+-- 用户信息
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_wxapp_userinfo`;
+CREATE TABLE `cms_wxapp_userinfo` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `open_id` varchar(128) DEFAULT NULL COMMENT 'openid',
+  `nick_name` varchar(64) DEFAULT NULL COMMENT ' 昵称',
+  `gender` int(11) DEFAULT NULL COMMENT '性别',
+  `language` varchar(64) DEFAULT NULL COMMENT '语言',
+  `city` varchar(64) DEFAULT NULL COMMENT '城市',
+  `province` varchar(64) DEFAULT NULL COMMENT '省份',
+  `country` varchar(64) DEFAULT NULL COMMENT '国家',
+  `avatar_url` varchar(255) DEFAULT NULL COMMENT '头像',
+  `create_time` int(11) DEFAULT NULL COMMENT '添加时间',
+  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;

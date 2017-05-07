@@ -16,6 +16,9 @@ class RoomController extends BaseController {
         $this->ajaxReturn($res);
     }
 
+    /**
+     * 我的聊天室列表
+     */
     public function myRoomList() {
         $client_id = $this->userInfo['openId'];
         $where = [
@@ -27,6 +30,9 @@ class RoomController extends BaseController {
         $this->ajaxReturn($res);
     }
 
+    /**
+     * 加入聊天室
+     */
     public function joinRoom() {
         $client_id = $this->userInfo['openId'];
         $room_id = I('post.room_id');
@@ -34,6 +40,9 @@ class RoomController extends BaseController {
         $this->ajaxReturn($res);
     }
 
+    /**
+     * 获取聊天室成员
+     */
     public function getRoomUsers() {
         $conversation_id = I('get.conversation_id');
         $res = RoomService::getRoomUsers($conversation_id);

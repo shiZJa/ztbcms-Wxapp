@@ -9,6 +9,13 @@ class RoomService extends BaseService {
     const IS_MASTER = 1;
     const IS_NO_MASTER = 0;
 
+    /**
+     * 加入聊天室操作
+     *
+     * @param $client_id
+     * @param $room_id
+     * @return array
+     */
     static function joinRoom($client_id, $room_id) {
         $room = M(self::TABLE_NAME)->where(['id' => $room_id])->find();
         if ($room) {
@@ -42,6 +49,15 @@ class RoomService extends BaseService {
         }
     }
 
+    /**
+     * 获取聊天室列表
+     *
+     * @param     $where
+     * @param int $page
+     * @param int $limit
+     * @param     $order
+     * @return array
+     */
     static function myRoomList($where, $page = 1, $limit = 10, $order) {
         $lists = M(self::TABLE_NAME)->where($where, $page, $limit)->order($order)->select();
         $total = M(self::TABLE_NAME)->where($where)->count();
@@ -57,6 +73,8 @@ class RoomService extends BaseService {
     }
 
     /**
+     * 创建聊天室
+     *
      * @param $client_id
      * @param $room_name
      * @param $conversation_id
@@ -85,6 +103,12 @@ class RoomService extends BaseService {
         }
     }
 
+    /**
+     * 后去聊天室成员
+     *
+     * @param $conversation_id
+     * @return array
+     */
     static function getRoomUsers($conversation_id) {
         $clients = M(self::TABLE_NAME)->field('client_id')->where(['conversation_id' => $conversation_id])->select();
         $ids = [];

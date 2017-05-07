@@ -13,20 +13,26 @@ use Wxapp\Handler\ChatTunnelHandler;
 class WxappService extends BaseService {
     function __construct() {
         Conf::setup([
-            'ServerHost' => 'wxapp.local.zhlhuang.cn',
-            'AuthServerUrl' => 'http://wxapp.local.zhlhuang.cn/index.php?g=Wxapp&m=User&a=mina_auth',
+            'ServerHost' => C('ServerHost'),
+            'AuthServerUrl' => C('AuthServerUrl'),
         ]);
     }
 
+    /**
+     * 调用登录sdk
+     *
+     * @return array
+     */
     public function login() {
         return LoginService::login();
     }
 
-    public function check(){
+    /**
+     * 获取用户信息sdk
+     *
+     * @return array
+     */
+    public function check() {
         return LoginService::check();
-    }
-    public function tunnel(){
-        $handle = new ChatTunnelHandler();
-        return TunnelService::handle($handle, ['checkLogin' => true]);
     }
 }
