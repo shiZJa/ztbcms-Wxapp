@@ -9,17 +9,17 @@ class RoomService extends BaseService {
     const IS_MASTER = 1;
     const IS_NO_MASTER = 0;
 
-    static function joinRoom($clinet_id, $room_id) {
+    static function joinRoom($client_id, $room_id) {
         $room = M(self::TABLE_NAME)->where(['id' => $room_id])->find();
         if ($room) {
             $conversation_id = $room['conversation_id'];
             $where = [
-                'clinet_id' => $clinet_id,
+                'clinet_id' => $client_id,
                 'conversation_id' => $conversation_id
             ];
             $is_exist = M(self::TABLE_NAME)->where($where)->find();
             $data = [
-                'clinet_id' => $clinet_id,
+                'clinet_id' => $client_id,
                 'conversation_id' => $conversation_id,
                 'room_name' => $room['room_name'],
             ];
@@ -32,7 +32,7 @@ class RoomService extends BaseService {
                 $res = M(self::TABLE_NAME)->add($data);
             }
             if ($res) {
-                return self::createReturn(true, $room, '');
+                return self::createReturn(true, $room, $res);
             } else {
                 return self::createReturn(false, '', '加入失败');
             }
