@@ -19,7 +19,7 @@ class RoomService extends BaseService {
             ];
             $is_exist = M(self::TABLE_NAME)->where($where)->find();
             $data = [
-                'clinet_id' => $client_id,
+                'client_id' => $client_id,
                 'conversation_id' => $conversation_id,
                 'room_name' => $room['room_name'],
             ];
