@@ -26,4 +26,17 @@ class RoomController extends BaseController {
         $res = RoomService::myRoomList($where, $page, $limit, 'id desc');
         $this->ajaxReturn($res);
     }
+
+    public function joinRoom() {
+        $client_id = $this->userInfo['openId'];
+        $room_id = I('post.room_id');
+        $res = RoomService::joinRoom($client_id, $room_id);
+        $this->ajaxReturn($res);
+    }
+
+    public function getRoomUsers() {
+        $conversation_id = I('get.conversation_id');
+        $res = RoomService::getRoomUsers($conversation_id);
+        $this->ajaxReturn($res);
+    }
 }

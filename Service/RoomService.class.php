@@ -6,6 +6,42 @@ use System\Service\BaseService;
 class RoomService extends BaseService {
     const TABLE_NAME = 'WxappRoom';
 
+    const IS_MASTER = 1;
+    const IS_NO_MASTER = 0;
+
+    static function joinRoom($clinet_id, $room_id) {
+        $room = M(self::TABLE_NAME)->where(['id' => $room_id])->find();
+        if ($room) {
+            $conversation_id = $room['conversation_id'];
+            $where = [
+                'clinet_id' => $clinet_id,
+                'conversation_id' => $conversation_id
+            ];
+            $is_exist = M(self::TABLE_NAME)->where($where)->find();
+            $data = [
+                'clinet_id' => $clinet_id,
+                'conversation_id' => $conversation_id,
+                'room_name' => $room['room_name'],
+            ];
+
+            if ($is_exist) {
+                $data['update_time'] = time();
+                $res = M(self::TABLE_NAME)->where(['id' => $is_exist['id']])->save($data);
+            } else {
+                $data['create_time'] = time();
+                $res = M(self::TABLE_NAME)->add($data);
+            }
+            if ($res) {
+                return self::createReturn(true, $room, '');
+            } else {
+                return self::createReturn(false, '', '加入失败');
+            }
+
+        } else {
+            return self::createReturn(false, '', '没有查到该聊天室');
+        }
+    }
+
     static function myRoomList($where, $page = 1, $limit = 10, $order) {
         $lists = M(self::TABLE_NAME)->where($where, $page, $limit)->order($order)->select();
         $total = M(self::TABLE_NAME)->where($where)->count();
@@ -32,6 +68,7 @@ class RoomService extends BaseService {
             'client_id' => $client_id,
             'room_name' => $room_name,
             'conversation_id' => $conversation_id,
+            'master' => self::IS_MASTER
         ];
         if ($is_exist) {
             //如果已经存在该会话
@@ -46,5 +83,16 @@ class RoomService extends BaseService {
         } else {
             return self::createReturn(false, '', '操作失败');
         }
+    }
+
+    static function getRoomUsers($conversation_id) {
+        $clients = M(self::TABLE_NAME)->field('client_id')->where(['conversation_id' => $conversation_id])->select();
+        $ids = [];
+        foreach ($clients as $key => $val) {
+            $ids[] = $val['client_id'];
+        }
+        $res = M(UserinfoService::TABLE_NAME)->where(['open_id' => ['in', $ids]])->select();
+
+        return self::createReturn(true, $res ? $res : [], '');
     }
 }
