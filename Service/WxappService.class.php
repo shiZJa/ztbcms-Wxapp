@@ -4,11 +4,8 @@
  */
 namespace Wxapp\Service;
 
-use QCloud_WeApp_SDK\Auth\LoginService;
-use QCloud_WeApp_SDK\Conf;
-use QCloud_WeApp_SDK\Tunnel\TunnelService;
 use System\Service\BaseService;
-use Wxapp\Handler\ChatTunnelHandler;
+use Wxapp\Lib\Conf;
 
 class WxappService extends BaseService {
     function __construct() {
