@@ -9,7 +9,7 @@ use Wxapp\Service\WxappService;
 
 class TestController extends Base {
     public function index() {
-        $wxapp = new WxappService();
-        $wxapp->login();
+        $res = WxappService::getAccessToken();
+        $this->ajaxReturn($res);
     }
 }

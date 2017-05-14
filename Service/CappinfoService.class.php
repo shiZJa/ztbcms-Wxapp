@@ -4,7 +4,9 @@
  */
 namespace Wxapp\Service;
 
-class CappinfoService {
+use System\Service\BaseService;
+
+class CappinfoService extends BaseService {
 
     const TABLE_NAME = 'WxappAppinfo';
 
@@ -62,26 +64,35 @@ class CappinfoService {
      * @return array|bool
      */
     public function select_cappinfo() {
-       /*
-       $select_sql = 'select * from cAppinfo';
-        $mysql_select = new mysql_db();
-        $result = $mysql_select->select_db($select_sql);
-        if ($result !== false && !empty($result)) {
-            $arr_result = array();
-            while ($row = mysql_fetch_array($result)) {
-                $arr_result['appid'] = $row['appid'];
-                $arr_result['secret'] = $row['secret'];
-                $arr_result['login_duration'] = $row['login_duration'];
-                $arr_result['session_duration'] = $row['session_duration'];
-                $arr_result['qcloud_appid'] = $row['qcloud_appid'];
-                $arr_result['ip'] = $row['ip'];
-            }
+        /*
+        $select_sql = 'select * from cAppinfo';
+         $mysql_select = new mysql_db();
+         $result = $mysql_select->select_db($select_sql);
+         if ($result !== false && !empty($result)) {
+             $arr_result = array();
+             while ($row = mysql_fetch_array($result)) {
+                 $arr_result['appid'] = $row['appid'];
+                 $arr_result['secret'] = $row['secret'];
+                 $arr_result['login_duration'] = $row['login_duration'];
+                 $arr_result['session_duration'] = $row['session_duration'];
+                 $arr_result['qcloud_appid'] = $row['qcloud_appid'];
+                 $arr_result['ip'] = $row['ip'];
+             }
 
-            return $arr_result;
+             return $arr_result;
+         } else {
+             return false;
+         }
+        */
+        return M(self::TABLE_NAME)->find();
+    }
+
+    static function getAppInfo() {
+        $res = M(self::TABLE_NAME)->find();
+        if ($res) {
+            return self::createReturn(true, $res, '');
         } else {
-            return false;
+            return self::createReturn(false, '', '');
         }
-       */
-       return M(self::TABLE_NAME)->find();
     }
 }
