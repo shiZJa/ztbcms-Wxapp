@@ -21,7 +21,7 @@ class RoomService extends BaseService {
         if ($room) {
             $conversation_id = $room['conversation_id'];
             $where = [
-                'clinet_id' => $client_id,
+                'client_id' => $client_id,
                 'conversation_id' => $conversation_id
             ];
             $is_exist = M(self::TABLE_NAME)->where($where)->find();
