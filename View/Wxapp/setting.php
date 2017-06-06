@@ -3,35 +3,32 @@
 <body class="J_scroll_fixed">
 <div class="wrap J_check_wrap">
     <Admintemplate file="Common/Nav"/>
-    <div class="h_a">配置</div>
-    <div id="app" class="hidden">
-        <form action="{:U('Wxapp/doSetting')}" method="post">
-            <div class="table_full">
-                <table class="table_form" width="100%" cellspacing="0">
-                    <tbody>
-                    <tr>
-                        <th style="width: 10%;">属性</th>
-                        <th style="width: 20%;">描述</th>
-                        <th class="hidden-xs" style="width: 10%;">类型</th>
-                        <th class="hidden-xs" style="width: 10%;">默认值</th>
-                        <th style="width: 20%;">当前值</th>
-                    </tr>
-                    <tr v-for="setting in settings" :setting="setting">
-                        <td>{{ setting.field }}</td>
-                        <td>{{ setting.comment }}</td>
-                        <td class="hidden-xs">{{ setting.type }}</td>
-                        <td class="hidden-xs">{{ setting.default }}</td>
-                        <td><input class="form-control" type="text" :name="setting.field" v-model="setting.value"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+    <div >
+        <div class="h_a">配置</div>
+        <div id="app" class="hidden">
+            <form action="{:U('Wxapp/doSetting')}" method="post">
+                <div class="table_full">
+                    <table class="table_form" width="100%" cellspacing="0">
+                        <tbody>
+                        <tr>
+                            <th style="width: 80px;">属性</th>
+                            <th style="width: 20%;" colspan="2">当前值</th>
+                        </tr>
+                        <tr v-for="setting in settings" :setting="setting">
+                            <td>{{ setting.field }}</td>
+                            <td><input class="form-control" type="text" :name="setting.field" v-model="setting.value"></td>
+                            <td>{{ setting.comment }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-            <div class="form-group">
-                <button class="btn btn-info" >设置</button>
-            </div>
+                <div class="form-group">
+                    <button class="btn btn-info" >设置</button>
+                </div>
 
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 
