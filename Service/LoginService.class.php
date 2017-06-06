@@ -31,9 +31,7 @@ class LoginService {
             return array(
                 'code' => 0,
                 'message' => 'ok',
-                'data' => array(
-                    'userInfo' => $loginResult['user_info'],
-                ),
+                'data' => $loginResult,
             );
 
         } catch (Exception $e) {

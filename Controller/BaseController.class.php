@@ -1,4 +1,5 @@
 <?php
+
 namespace Wxapp\Controller;
 
 use Common\Controller\Base;
