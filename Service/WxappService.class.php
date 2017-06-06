@@ -11,8 +11,8 @@ use Wxapp\Lib\HttpUtil;
 class WxappService extends BaseService {
     function __construct() {
         Conf::setup([
-            'ServerHost' => C('ServerHost'),
-            'AuthServerUrl' => C('AuthServerUrl'),
+            'ServerHost' => $_SERVER['HTTP_HOST'],
+            'AuthServerUrl' => U('Wxapp/User/mina_auth'),
         ]);
     }
 
