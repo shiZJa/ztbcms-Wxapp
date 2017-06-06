@@ -29,7 +29,7 @@ class UserController extends Base {
             $userInfo = $checkResult['user_info'];
 
             //检查有没有注册
-            $record = M('member')->where(['username' => $this->userInfo['openId']])->find();
+            $record = M('member')->where(['username' => $userInfo['openId']])->find();
             if (empty($record)) {
                 //未注册
                 $info = [
