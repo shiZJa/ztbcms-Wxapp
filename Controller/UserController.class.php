@@ -41,7 +41,7 @@ class UserController extends Base {
                     'sex' => $userInfo['gender'],
                     'userpic' => $userInfo['avatarUrl'],
                     'regdate' => time(),
-                    'regip' => get_client_ip, //注册的ip地址
+                    'regip' => get_client_ip(), //注册的ip地址
                     'checked' => 1,
                     // TODO 配置小程序用户模型ID
 //                    'modelid' => 1,
