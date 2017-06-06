@@ -1,4 +1,5 @@
 <?php
+
 namespace Wxapp\Controller;
 
 use Common\Controller\Base;
@@ -8,6 +9,10 @@ use Wxapp\Lib\AuthAPI;
 use Wxapp\Service\UserinfoService;
 
 class UserController extends Base {
+
+    // 小程序用户的 CMS 用户模型名称,如果没有将会自动创建
+    CONST CMS_MEMBER_MODEL_NAME = 'wxapp';
+
     /**
      * 登录操作
      */
@@ -15,7 +20,7 @@ class UserController extends Base {
         $wxapp = new WxappService();
         $res = $wxapp->login();
 
-        if ($res['code'] == 0){
+        if ($res['code'] == 0) {
             $id = $res['data']['id'];
             $skey = $res['data']['skey'];
 
@@ -36,6 +41,7 @@ class UserController extends Base {
                 //注册 cms 账号
                 $userid = service("Passport")->userRegister($info['username'], $info['password'], $info['email']);
 
+
                 $data = [
                     'nickname' => $userInfo['nickName'],
                     'sex' => $userInfo['gender'],
@@ -43,8 +49,7 @@ class UserController extends Base {
                     'regdate' => time(),
                     'regip' => get_client_ip(), //注册的ip地址
                     'checked' => 1,
-                    // TODO 配置小程序用户模型ID
-//                    'modelid' => 1,
+                    'modelid' => self::getCMSModelId(),//获取小程序用户的用户模型ID
                 ];
                 D('Member')->where("userid='%d'", $userid)->save($data);
             }
@@ -70,5 +75,37 @@ class UserController extends Base {
         $parse_request = new ParseRequestService();
         $res = $parse_request->parseJson($request);
         echo $res;
+    }
+
+    /**
+     * 获取小程序用户的用户模型ID
+     * @return int 模型ID
+     */
+    protected function getCMSModelId() {
+        $name = self::CMS_MEMBER_MODEL_NAME;
+        $record = M('model')->where(['name' => $name])->find();
+        if (empty($record)) {
+            $data = [
+                'name' => $name,
+                'description' => '小程序用户的用户模型',
+                'tablename' => 'member_' . $name,
+                'type' => 2,
+            ];
+            $model = D('Content/Model');
+            $data = $model->create($data);
+            if ($data) {
+                $id = $model->add($data);
+                if ($id > 0) {
+                    //创建表
+                    $model->AddModelMember($data['tablename'], $id);
+                    //更新缓存
+                    D('Member/Member')->member_cache();
+                    return $id;
+                }
+            }
+            return 0; //创建模型失败
+        } else {
+            return $record['id'];
+        }
     }
 }
