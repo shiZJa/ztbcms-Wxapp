@@ -5,6 +5,7 @@ use Common\Controller\Base;
 use Wxapp\Service\ParseRequestService;
 use Wxapp\Service\WxappService;
 use Wxapp\Lib\AuthAPI;
+use Wxapp\Service\UserinfoService;
 
 class UserController extends Base {
     /**
@@ -47,6 +48,8 @@ class UserController extends Base {
                 ];
                 D('Member')->where("userid='%d'", $userid)->save($data);
             }
+
+            UserinfoService::updateInfo($userInfo);
         }
     }
 
