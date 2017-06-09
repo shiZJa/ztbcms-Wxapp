@@ -49,7 +49,7 @@ class UserController extends Base {
                     'regdate' => time(),
                     'regip' => get_client_ip(), //注册的ip地址
                     'checked' => 1,
-                    'modelid' => self::getCMSModelId(),//获取小程序用户的用户模型ID
+                    'modelid' => '',//获取小程序用户的用户模型ID
                 ];
                 D('Member')->where("userid='%d'", $userid)->save($data);
             }
