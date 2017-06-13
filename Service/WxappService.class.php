@@ -12,7 +12,7 @@ class WxappService extends BaseService {
     function __construct() {
         Conf::setup([
             'ServerHost' => $_SERVER['HTTP_HOST'],
-            'AuthServerUrl' => U('Wxapp/User/mina_auth'),
+            'AuthServerUrl' => U('Wxapp/User/minaAuth'),
         ]);
     }
 

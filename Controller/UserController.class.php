@@ -70,7 +70,7 @@ class UserController extends Base {
     /**
      * 权限认证
      */
-    public function mina_auth() {
+    public function minaAuth() {
         $request = file_get_contents("php://input");
         $parse_request = new ParseRequestService();
         $res = $parse_request->parseJson($request);
