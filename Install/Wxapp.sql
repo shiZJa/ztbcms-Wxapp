@@ -3,14 +3,20 @@
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_wxapp_appinfo`;
 CREATE TABLE `cms_wxapp_appinfo` (
-  `appid` varchar(200) COLLATE utf8_unicode_ci NOT NULL COMMENT 'appid',
-  `secret` varchar(300) COLLATE utf8_unicode_ci NOT NULL COMMENT '小程序秘钥',
+  `id` int(11) DEFAULT NULL,
+  `appid` varchar(200) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT 'appid',
+  `secret` varchar(300) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '小程序秘钥',
   `login_duration` int(11) DEFAULT '30',
   `session_duration` int(11) DEFAULT '2592000' COMMENT '’',
-  `qcloud_appid` varchar(300) COLLATE utf8_unicode_ci DEFAULT 'appid_qcloud',
-  `ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT '0.0.0.0',
-  PRIMARY KEY (`appid`)
+  `qcloud_appid` varchar(300) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT 'appid_qcloud',
+  `ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT '0.0.0.0',
+  `mch_id` varchar(255) DEFAULT NULL COMMENT '微信支付商户号',
+  `key` varchar(255) DEFAULT NULL COMMENT '微信支付key'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO `cms_wxapp_appinfo` ( `appid`, `secret`, `login_duration`, `session_duration`, `qcloud_appid`, `ip`, `mch_id`, `key`)
+VALUES
+	( '', '', 30, 2592000, 'appid_qcloud', '0.0.0.0', '', '');
+
 -- ----------------------------
 -- 小程序用户相关信息
 -- ----------------------------
