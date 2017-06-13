@@ -30,7 +30,7 @@ class WxpayService extends BaseService {
                 $return = ['return_code' => 'FAIL', 'return_msg' => '签名错误'];
             }
             $res_xml = Util::arrayToXml($return);
-            file_put_contents(C('UPLOADFILEPATH') . 'res_xml.txt', json_encode($res));
+            file_put_contents(C('UPLOADFILEPATH') . 'res_xml.txt', json_encode($res_xml));
             echo $res_xml;
         }
     }
