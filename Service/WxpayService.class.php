@@ -12,11 +12,27 @@ use Wxapp\Lib\HttpUtil;
  */
 class WxpayService extends BaseService {
 
-    public function pay_notify() {
-        $post = I('post.');
+    public function pay_notify($callback) {
         $request = file_get_contents("php://input");
-        file_put_contents(C('UPLOADFILEPATH') . 'post.txt', json_encode($post));
-        file_put_contents(C('UPLOADFILEPATH') . 'request.txt', json_encode($request));
+        $res = Util::xmlToArray($request);
+        file_put_contents(C('UPLOADFILEPATH') . 'request.txt', json_encode($res));
+        if ($res['result_code'] == 'SUCCESS' && $res['return_code'] == 'SUCCESS') {
+            $sign = $res['sign'];
+            unset($res['sign']);
+            $app = new CappinfoService();
+            $appInfo = $app->select_cappinfo();
+            $local_sign = Util::sign($res, $appInfo['appid']);
+            if ($local_sign == $sign) {
+                //签名成功
+                $callback($res);
+                $return = ['return_code' => 'SUCCESS', 'return_msg' => 'ok'];
+            } else {
+                $return = ['return_code' => 'FAIL', 'return_msg' => '签名错误'];
+            }
+            $res_xml = Util::arrayToXml($return);
+            file_put_contents(C('UPLOADFILEPATH') . 'res_xml.txt', json_encode($res));
+            echo $res_xml;
+        }
     }
 
     /**
