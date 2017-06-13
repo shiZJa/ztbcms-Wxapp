@@ -21,7 +21,7 @@ class WxpayService extends BaseService {
             unset($res['sign']);
             $app = new CappinfoService();
             $appInfo = $app->select_cappinfo();
-            $local_sign = Util::sign($res, $appInfo['appid']);
+            $local_sign = Util::sign($res, $appInfo['key']);
             if ($local_sign == $sign) {
                 //签名成功
                 $callback($res);
@@ -29,8 +29,8 @@ class WxpayService extends BaseService {
             } else {
                 $return = ['return_code' => 'FAIL', 'return_msg' => '签名错误'];
             }
+            file_put_contents(C('UPLOADFILEPATH') . 'res_xml.txt', json_encode($return));
             $res_xml = Util::arrayToXml($return);
-            file_put_contents(C('UPLOADFILEPATH') . 'res_xml.txt', json_encode($res_xml));
             echo $res_xml;
         }
     }
