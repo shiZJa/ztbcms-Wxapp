@@ -3,7 +3,7 @@
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_wxapp_appinfo`;
 CREATE TABLE `cms_wxapp_appinfo` (
-  `id` int(11) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `appid` varchar(200) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT 'appid',
   `secret` varchar(300) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT '小程序秘钥',
   `login_duration` int(11) DEFAULT '30',
@@ -11,8 +11,9 @@ CREATE TABLE `cms_wxapp_appinfo` (
   `qcloud_appid` varchar(300) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT 'appid_qcloud',
   `ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT '0.0.0.0',
   `mch_id` varchar(255) DEFAULT NULL COMMENT '微信支付商户号',
-  `key` varchar(255) DEFAULT NULL COMMENT '微信支付key'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `key` varchar(255) DEFAULT NULL COMMENT '微信支付key',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 INSERT INTO `cms_wxapp_appinfo` ( `appid`, `secret`, `login_duration`, `session_duration`, `qcloud_appid`, `ip`, `mch_id`, `key`)
 VALUES
 	( '', '', 30, 2592000, 'appid_qcloud', '0.0.0.0', '', '');
