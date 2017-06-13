@@ -11,6 +11,14 @@ use Wxapp\Lib\HttpUtil;
  * @package Wxapp\Service
  */
 class WxpayService extends BaseService {
+
+    public function pay_notify() {
+        $post = I('post.');
+        $request = file_get_contents("php://input");
+        file_put_contents(UPLOADFILEPATH . 'post.txt', json_encode($post));
+        file_put_contents(UPLOADFILEPATH . 'request.txt', json_encode($request));
+    }
+
     /**
      * 获取微信支付的前端调用配置
      *
