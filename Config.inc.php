@@ -9,7 +9,7 @@ return array(
     //图标
     'icon' => 'https://dn-coding-net-production-pp.qbox.me/e57af720-f26c-4f3b-90b9-88241b680b7b.png',
     //模块简介
-    'introduce' => '小程序开发模块，ps:依赖腾讯的sdk https://github.com/tencentyun/wafer-php-server-sdk',
+    'introduce' => '小程序开发模块，参考腾讯的sdk https://github.com/tencentyun/wafer-php-server-sdk',
     //模块介绍地址
     'address' => 'http://www.ztbcms.com',
     //模块作者
