@@ -22,7 +22,7 @@ class TemplateController extends BaseController {
             'keyword4' => ['value' => '购买商品', 'color' => '#173177'],
             'keyword5' => ['value' => date("Y-m-d H:i", time()), 'color' => '#173177'],
         ];
-        $res = TemplateService::sendTemplate($openid, '60lvtJCresUaE9AmeySsuMBxQ7NdRP-hcYa0Xl0O_K4', $from_id,
+        $res = TemplateService::sendTemplate($openid, 'THt3zSp7wmHKDJpWvHugQe_qLt470YQ7c1CcI6Pke8w', $from_id,
             '/pages/test/test', $data);
         $this->ajaxReturn($res);
     }
