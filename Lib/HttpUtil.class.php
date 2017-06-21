@@ -10,9 +10,10 @@ class HttpUtil {
      *
      * @param string $url
      * @param array  $param
+     * @param boolean  $is_json
      * @return string content
      */
-    public function http_post($url, $param) {
+    public function http_post($url, $param, $is_json = false) {
 
         $oCurl = curl_init();
         if (stripos($url, "https://") !== false) {
@@ -22,8 +23,12 @@ class HttpUtil {
         curl_setopt($oCurl, CURLOPT_URL, $url);
         curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($oCurl, CURLOPT_POST, true);
-        curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($param));
-        curl_setopt($oCurl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        if ($is_json) {
+            curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($param));
+            curl_setopt($oCurl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        }
+        curl_setopt($oCurl, CURLOPT_POSTFIELDS, $param);
+
         $sContent = curl_exec($oCurl);
         $aStatus = curl_getinfo($oCurl);
 

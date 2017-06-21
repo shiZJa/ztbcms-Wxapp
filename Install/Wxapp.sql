@@ -53,3 +53,17 @@ CREATE TABLE `cms_wxapp_userinfo` (
   `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- 小程序发送模板消息触发的来源
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_wxapp_template_from`;
+CREATE TABLE `cms_wxapp_template_from` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `openid` varchar(255) NOT NULL DEFAULT '' COMMENT '发送模板的用户openid',
+  `form_id` varchar(255) NOT NULL DEFAULT '' COMMENT '来源id',
+  `from_type` varchar(64) NOT NULL DEFAULT '' COMMENT '来源类型',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `send_count` tinyint(1) NOT NULL DEFAULT '0' COMMENT '已经发送次数,支付类型可以发送3次',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;

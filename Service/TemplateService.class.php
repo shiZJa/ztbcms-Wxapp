@@ -7,10 +7,10 @@ use Wxapp\Lib\HttpUtil;
 class TemplateService extends BaseService {
     const TABLE_NAME = 'WxappTemplateFrom';
 
-    static function addTemplateFrom($openid, $from_id, $from_type) {
+    static function addTemplateFrom($openid, $form_id, $from_type) {
         $data = [
             'openid' => $openid,
-            'from_id' => $from_id,
+            'from_id' => $form_id,
             'from_type' => $from_type,
             'create_time' => time()
         ];
@@ -25,7 +25,7 @@ class TemplateService extends BaseService {
     static function sendTemplate(
         $openid,
         $template_id,
-        $from_id,
+        $form_id,
         $page_url,
         $data,
         $color = '',
@@ -34,7 +34,7 @@ class TemplateService extends BaseService {
         $data = [
             'touser' => $openid,
             'template_id' => $template_id,
-            'form_id' => $from_id,
+            'form_id' => $form_id,
             'page' => $page_url,
             'data' => $data,
             'color' => $color,
@@ -45,7 +45,7 @@ class TemplateService extends BaseService {
             $token = $token_res['data'];
             $url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' . $token;
             $http = new HttpUtil();
-            $res = json_decode($http->http_post($url, $data), 1);
+            $res = json_decode($http->http_post($url, $data, true), 1);
             if ($res['errcode'] == 0) {
                 //发送成功
                 return self::createReturn(true, $res, '发送成功');
