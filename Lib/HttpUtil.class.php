@@ -26,8 +26,9 @@ class HttpUtil {
         if ($is_json) {
             curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($param));
             curl_setopt($oCurl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        }else{
+            curl_setopt($oCurl, CURLOPT_POSTFIELDS, $param);
         }
-        curl_setopt($oCurl, CURLOPT_POSTFIELDS, $param);
 
         $sContent = curl_exec($oCurl);
         $aStatus = curl_getinfo($oCurl);
