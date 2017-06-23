@@ -95,7 +95,7 @@ class LoginService {
         Util::writeJsonResult($result);
     }
 
-    private static function getHttpHeader($headerKey) {
+    static function getHttpHeader($headerKey) {
         $headerValue = Util::getHttpHeader($headerKey);
 
         if (!$headerValue) {

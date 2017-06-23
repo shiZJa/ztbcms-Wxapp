@@ -47,11 +47,18 @@ class HttpUtil {
      * @param $url
      * @return bool|mixed
      */
-    public function http_get($url) {
+    public function http_get($url,$params) {
         $oCurl = curl_init();
         if (stripos($url, "https://") !== false) {
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, false);
+        }
+
+        if (is_array($params)) {
+            $url .= '?';
+            foreach ($params as $key => $value) {
+                $url .= $key . '=' . $value . '&';
+            }
         }
         curl_setopt($oCurl, CURLOPT_URL, $url);
         curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);

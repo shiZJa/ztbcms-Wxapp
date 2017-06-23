@@ -3,6 +3,14 @@
 namespace Wxapp\Controller;
 
 use Common\Controller\Base;
+use Wxapp\Lib\Constants;
+use Wxapp\Lib\DecryptData;
+use Wxapp\Lib\HttpUtil;
+use Wxapp\Lib\ReturnCode;
+use Wxapp\Lib\WXBizDataCrypt;
+use Wxapp\Service\CsessioninfoService;
+use Wxapp\Service\LoginService;
+use Wxapp\Service\OpenService;
 use Wxapp\Service\ParseRequestService;
 use Wxapp\Service\WxappService;
 use Wxapp\Lib\AuthAPI;
@@ -12,6 +20,11 @@ class UserController extends Base {
 
     // 小程序用户的 CMS 用户模型名称,如果没有将会自动创建
     CONST CMS_MEMBER_MODEL_NAME = 'wxapp';
+
+    public function loginTest() {
+        $res = OpenService::getUserInfo('wxde88953c782ad68f');
+        $this->ajaxReturn($res);
+    }
 
     /**
      * 登录操作
@@ -79,6 +92,7 @@ class UserController extends Base {
 
     /**
      * 获取小程序用户的用户模型ID
+     *
      * @return int 模型ID
      */
     protected function getCMSModelId() {
@@ -100,9 +114,11 @@ class UserController extends Base {
                     $model->AddModelMember($data['tablename'], $id);
                     //更新缓存
                     D('Member/Member')->member_cache();
+
                     return $id;
                 }
             }
+
             return 0; //创建模型失败
         } else {
             return $record['modelid'];
