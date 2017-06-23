@@ -19,8 +19,7 @@ class WxpayService extends BaseService {
         if ($res['result_code'] == 'SUCCESS' && $res['return_code'] == 'SUCCESS') {
             $sign = $res['sign'];
             unset($res['sign']);
-            $app = new CappinfoService();
-            $appInfo = $app->select_cappinfo();
+            $appInfo = CappinfoService::getAppInfo()['data'];
             $local_sign = Util::sign($res, $appInfo['key']);
             if ($local_sign == $sign) {
                 //签名成功
@@ -48,8 +47,7 @@ class WxpayService extends BaseService {
     static function getWxpayConfig($openid, $out_trade_no, $total_fee, $notify_url, $body = '小程序微信支付') {
         $order_res = self::createOrder($openid, $out_trade_no, $total_fee, $notify_url, $body);
         if ($order_res['status']) {
-            $app = new CappinfoService();
-            $appInfo = $app->select_cappinfo();
+            $appInfo = CappinfoService::getAppInfo()['data'];
             $prepay_id = $order_res['data'];
             $data = [
                 'appId' => $appInfo['appid'],
@@ -78,8 +76,7 @@ class WxpayService extends BaseService {
      * @return array
      */
     static function createOrder($openid, $out_trade_no, $total_fee, $notify_url, $body = '小程序微信支付') {
-        $app = new CappinfoService();
-        $appInfo = $app->select_cappinfo();
+        $appInfo = CappinfoService::getAppInfo()['data'];
         $data = [
             'appid' => $appInfo['appid'],
             'mch_id' => $appInfo['mch_id'],

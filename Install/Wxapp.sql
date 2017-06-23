@@ -12,6 +12,7 @@ CREATE TABLE `cms_wxapp_appinfo` (
   `ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT '0.0.0.0',
   `mch_id` varchar(255) DEFAULT NULL COMMENT '微信支付商户号',
   `key` varchar(255) DEFAULT NULL COMMENT '微信支付key',
+  `is_default` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否默认',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 

@@ -23,8 +23,7 @@ class Auth {
      * @return mixed
      */
     public function get_id_skey($code, $encrypt_data, $iv = "old") {
-        $cappinfo_service = new CappinfoService();
-        $cappinfo_data = $cappinfo_service->select_cappinfo();
+        $cappinfo_data = CappinfoService::getAppInfo()['data'];
         if (empty($cappinfo_data) || ($cappinfo_data == false)) {
             $ret['returnCode'] = ReturnCode::MA_NO_APPID;
             $ret['returnMessage'] = 'NO_APPID';
@@ -119,36 +118,6 @@ class Auth {
                 $ret['returnMessage'] = 'WEIXIN_NET_ERR';
                 $ret['returnData'] = '';
             }
-
-            /**
-             * 上报数据部分
-             */
-            /*  $report_data = new ready_for_report_data();
-
-              $arr_report_data = array(
-                  "ip" => $ip,
-                  "appid" => $qcloud_appid,
-                  "login_count" => 0,
-                  "login_sucess" => 0,
-                  "auth_count" => 0,
-                  "auth_sucess" => 0
-              );
-
-              if ($report_data->check_data()) {
-                  $report_data->ready_data("login_count");
-              } else {
-                  $arr_report_data['login_count'] = 1;
-                  $report_data->write_report_data(json_encode($arr_report_data));
-              }
-              if ($ret['returnCode'] == 0) {
-                  if ($report_data->check_data()) {
-                      $report_data->ready_data("login_sucess");
-                  } else {
-                      $arr_report_data['login_count'] = 1;
-                      $arr_report_data['login_sucess'] = 1;
-                      $report_data->write_report_data(json_encode($arr_report_data));
-                  }
-              }*/
         }
 
         return $ret;
@@ -162,8 +131,7 @@ class Auth {
      */
     public function auth($id, $skey) {
         //根据Id和skey 在cSessionInfo中进行鉴权，返回鉴权失败和密钥过期
-        $cappinfo_service = new CappinfoService();
-        $cappinfo_data = $cappinfo_service->select_cappinfo();
+        $cappinfo_data = CappinfoService::getAppInfo()['data'];
         if (empty($cappinfo_data) || ($cappinfo_data == false)) {
             $ret['returnCode'] = ReturnCode::MA_NO_APPID;
             $ret['returnMessage'] = 'NO_APPID';
@@ -193,37 +161,6 @@ class Auth {
                 $ret['returnMessage'] = 'AUTH_FAIL';
                 $ret['returnData'] = '';
             }
-
-            /**
-             * 上报数据部分
-             */
-            /* $report_data = new ready_for_report_data();
-
-             $arr_report_data = array(
-                 "ip" => $ip,
-                 "appid" => $qcloud_appid,
-                 "login_count" => 0,
-                 "login_sucess" => 0,
-                 "auth_count" => 0,
-                 "auth_sucess" => 0
-             );
-
-             if ($report_data->check_data()) {
-                 $report_data->ready_data("auth_count");
-             } else {
-                 $arr_report_data['auth_count'] = 1;
-                 $report_data->write_report_data(json_encode($arr_report_data));
-             }
-             if ($ret['returnCode'] == 0) {
-                 if ($report_data->check_data()) {
-                     $report_data->ready_data("auth_sucess");
-                 } else {
-                     $arr_report_data['auth_count'] = 1;
-                     $arr_report_data['auth_sucess'] = 1;
-                     $report_data->write_report_data(json_encode($arr_report_data));
-                 }
-             }*/
-
         }
 
         return $ret;
@@ -267,47 +204,4 @@ class Auth {
 
         return $ret;
     }
-
-    public function init_data($appid, $secret, $qcloud_appid, $ip) {
-        $cappinfo_service = new CappinfoService();
-        $cappinfo_data = $cappinfo_service->select_cappinfo();
-        $params = array(
-            "appid" => $appid,
-            "secret" => $secret,
-            "qcloud_appid" => $qcloud_appid,
-            "ip" => $ip
-        );
-
-        if (empty($cappinfo_data)) {
-            if ($cappinfo_service->insert_cappinfo($params)) {
-                $ret['returnCode'] = ReturnCode::MA_OK;
-                $ret['returnMessage'] = 'INIT_APPINFO_SUCCESS';
-                $ret['returnData'] = '';
-            } else {
-                $ret['returnCode'] = ReturnCode::MA_INIT_APPINFO_ERR;
-                $ret['returnMessage'] = 'INIT_APPINFO_FAIL';
-                $ret['returnData'] = '';
-            }
-        } else {
-            if ($cappinfo_data != false) {
-                $cappinfo_service->delete_cappinfo();
-                if ($cappinfo_service->insert_cappinfo($params)) {
-                    $ret['returnCode'] = ReturnCode::MA_OK;
-                    $ret['returnMessage'] = 'INIT_APPINFO_SUCCESS';
-                    $ret['returnData'] = '';
-                } else {
-                    $ret['returnCode'] = ReturnCode::MA_INIT_APPINFO_ERR;
-                    $ret['returnMessage'] = 'INIT_APPINFO_FAIL';
-                    $ret['returnData'] = '';
-                }
-            } else {
-                $ret['returnCode'] = ReturnCode::MA_MYSQL_ERR;
-                $ret['returnMessage'] = 'MYSQL_ERR';
-                $ret['returnData'] = '';
-            }
-        }
-
-        return $ret;
-    }
-
 }

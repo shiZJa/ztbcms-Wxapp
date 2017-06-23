@@ -17,7 +17,7 @@ return array(
         //子菜单列表
         "child" => array(
             array(
-                "route" => "Wxapp/Wxapp/setting",
+                "route" => "Wxapp/Wxapp/index",
                 "type" => 0,
                 "status" => 1,
                 "name" => "小程序设置",
