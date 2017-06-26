@@ -42,6 +42,7 @@
                         <td align="center">{{ item.is_default == 1 ? '是' : '否' }}</td>
                         <td align="center">
                             <a class="btn btn-info" :href="'{:U('addWxapp')}&id='+item.id">编辑</a>
+                            <a class="btn btn-info" :href="'{:U('Wxapp/Open/domainList')}&appid='+item.appid">域名编辑</a>
                             <a @click="deleteBtn(item.id)" class="btn btn-danger" href="javascript:;">删除</a>
                         </td>
                     </tr>

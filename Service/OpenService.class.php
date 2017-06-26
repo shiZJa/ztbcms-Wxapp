@@ -15,6 +15,27 @@ class OpenService extends BaseService {
     const DOMAIN = 'http://fenxiangbei.com';
     const EXPIRES_IN = 7200;
 
+    static function modifyDomain($appid = null, $action = 'get', $data = []) {
+        $app = CappinfoService::getAppInfo($appid)['data'];
+        $appid = $app['appid'];
+        $url = self::DOMAIN . '/api_v2/wxapp/modify_domain/app_id/' . $appid . '.html';
+        $action_arr = [
+            'action' => $action,
+        ];
+        $post_data = [
+            'data' => json_encode(array_merge($action_arr, $data))
+        ];
+        $http = new HttpUtil();
+        $sign = self::sign($appid, $post_data, $app['secret_key'])['data'];
+        $post_data['sign'] = $sign;
+        $res = json_decode($http->http_post($url, $post_data), 1);
+        if (!empty($res['code'])) {
+            return self::createReturn(true, $res['data'], $res['msg']);
+        } else {
+            return self::createReturn(false, $res['data'], $res['msg']);
+        }
+    }
+
     static function login($appid = null) {
         try {
             $app = CappinfoService::getAppInfo($appid)['data'];
