@@ -139,9 +139,6 @@ class Auth {
         } else {
             $login_duration = $cappinfo_data['login_duration'];
             $session_duration = $cappinfo_data['session_duration'];
-            $ip = $cappinfo_data['ip'];
-            $qcloud_appid = $cappinfo_data['qcloud_appid'];
-
             $params = array(
                 "uuid" => $id,
                 "skey" => $skey,

@@ -25,18 +25,16 @@ class LoginService {
                 'id' => $loginResult['id'],
                 'skey' => $loginResult['skey'],
             );
-
-            Util::writeJsonResult($result);
+            $result['userInfo'] = $loginResult['user_info'];
 
             return array(
                 'code' => 0,
                 'message' => 'ok',
-                'data' => $loginResult,
+                'data' => $result,
             );
 
         } catch (Exception $e) {
             $error = new LoginServiceException(Constants::ERR_LOGIN_FAILED, $e->getMessage());
-            self::writeError($error);
 
             return array(
                 'code' => -1,

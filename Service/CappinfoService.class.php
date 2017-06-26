@@ -20,6 +20,7 @@ class CappinfoService extends BaseService {
      * @return array
      */
     static function getAppInfo($appid = null) {
+        $where=[];
         if ($appid) {
             $where['appid'] = $appid;
         }

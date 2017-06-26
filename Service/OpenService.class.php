@@ -13,7 +13,9 @@ class OpenService extends BaseService {
     const DOMAIN = 'http://fenxiangbei.com';
     const EXPIRES_IN = 7200;
 
-    static function getUserInfo($appid) {
+    static function login($appid = null) {
+        $app = CappinfoService::getAppInfo($appid)['data'];
+        $appid = $app['appid'];
 
         $code = LoginService::getHttpHeader(Constants::WX_HEADER_CODE);
         $encrypt_data = LoginService::getHttpHeader(Constants::WX_HEADER_ENCRYPTED_DATA);
@@ -88,15 +90,23 @@ class OpenService extends BaseService {
                 }
             }
             if ($ret['returnCode'] == 0) {
-                return self::createReturn(true, $ret['returnData'], 'ok');
+                $data = $ret['returnData'];
+                $res_data = [
+                    Constants::WX_SESSION_MAGIC_ID => 1,
+                    'session' => ['id' => $data['id'], 'skey' => $data['skey']],
+                    'userInfo' => $data['user_info']
+                ];
+
+                return self::createReturn(true, $res_data, 'ok');
             } else {
-                return self::createReturn(true, $ret['returnCode'], $ret['returnMessage']);
+                return self::createReturn(false, $ret['returnCode'], $ret['returnMessage']);
             }
         }
     }
 
-    static function getSession($appid, $code) {
+    static function getSession($appid = null, $code) {
         $app = CappinfoService::getAppInfo($appid)['data'];
+        $appid = $app['appid'];
         $url = self::DOMAIN . '/api_v2/wxapp/get_session/app_id/' . $appid . '.html';
         $data = ['code' => $code];
         $http = new HttpUtil();

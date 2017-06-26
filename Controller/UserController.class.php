@@ -3,13 +3,6 @@
 namespace Wxapp\Controller;
 
 use Common\Controller\Base;
-use Wxapp\Lib\Constants;
-use Wxapp\Lib\DecryptData;
-use Wxapp\Lib\HttpUtil;
-use Wxapp\Lib\ReturnCode;
-use Wxapp\Lib\WXBizDataCrypt;
-use Wxapp\Service\CsessioninfoService;
-use Wxapp\Service\LoginService;
 use Wxapp\Service\OpenService;
 use Wxapp\Service\ParseRequestService;
 use Wxapp\Service\WxappService;
@@ -21,21 +14,16 @@ class UserController extends Base {
     // 小程序用户的 CMS 用户模型名称,如果没有将会自动创建
     CONST CMS_MEMBER_MODEL_NAME = 'wxapp';
 
-    public function loginTest() {
-        $res = OpenService::getUserInfo('wxde88953c782ad68f');
-        $this->ajaxReturn($res);
-    }
-
     /**
      * 登录操作
      */
     public function login() {
         $wxapp = new WxappService();
-        $res = $wxapp->login();
+        $res = $wxapp->login(true);
 
-        if ($res['code'] == 0) {
-            $id = $res['data']['id'];
-            $skey = $res['data']['skey'];
+        if ($res['status']) {
+            $id = $res['data']['session']['id'];
+            $skey = $res['data']['session']['skey'];
 
             $checkResult = AuthAPI::checkLogin($id, $skey);
 
@@ -68,6 +56,9 @@ class UserController extends Base {
             }
 
             UserinfoService::updateInfo($userInfo);
+            $this->ajaxReturn($res['data']);
+        } else {
+            $this->ajaxReturn($res);
         }
     }
 

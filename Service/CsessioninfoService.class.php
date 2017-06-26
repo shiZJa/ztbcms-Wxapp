@@ -106,8 +106,7 @@ class CsessioninfoService extends BaseService {
             $now_time = time();
             $create_time = strtotime($result['create_time']);
             $last_visit_time = strtotime($result['last_visit_time']);
-            if (($now_time - $create_time) / 86400 > $params['login_duration']) {
-                //$this->delete_csessioninfo_by_id_skey($params);
+            if (($now_time - $create_time) > $params['login_duration']) {
                 return false;
             } else {
                 if (($now_time - $last_visit_time) > $params['session_duration']) {
