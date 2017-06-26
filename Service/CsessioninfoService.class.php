@@ -21,7 +21,8 @@ class CsessioninfoService extends BaseService {
             'last_visit_time' => $params['last_visit_time'],
             'open_id' => $params['openid'],
             'session_key' => $params['session_key'],
-            'user_info' => $params['user_info']
+            'user_info' => $params['user_info'],
+            'appid' => $params['appid']
         ];
 
         return M(self::TABLE_NAME)->add($insert_data);

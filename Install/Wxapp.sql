@@ -50,7 +50,7 @@ CREATE TABLE `cms_wxapp_userinfo` (
   `avatar_url` varchar(255) DEFAULT NULL COMMENT '头像',
   `create_time` int(11) DEFAULT NULL COMMENT '添加时间',
   `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`)
+  `appid` varchar(200) DEFAULT NULL COMMENT '所属appid',
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------

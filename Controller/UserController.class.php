@@ -3,10 +3,8 @@
 namespace Wxapp\Controller;
 
 use Common\Controller\Base;
-use Wxapp\Service\OpenService;
 use Wxapp\Service\ParseRequestService;
 use Wxapp\Service\WxappService;
-use Wxapp\Lib\AuthAPI;
 use Wxapp\Service\UserinfoService;
 
 class UserController extends Base {
@@ -20,14 +18,8 @@ class UserController extends Base {
     public function login() {
         $wxapp = new WxappService();
         $res = $wxapp->login(true);
-
         if ($res['status']) {
-            $id = $res['data']['session']['id'];
-            $skey = $res['data']['session']['skey'];
-
-            $checkResult = AuthAPI::checkLogin($id, $skey);
-
-            $userInfo = $checkResult['user_info'];
+            $userInfo = $res['data']['userInfo'];
 
             //检查有没有注册
             $record = M('member')->where(['username' => $userInfo['openId']])->find();
@@ -54,8 +46,6 @@ class UserController extends Base {
                 ];
                 D('Member')->where("userid='%d'", $userid)->save($data);
             }
-
-            UserinfoService::updateInfo($userInfo);
             $this->ajaxReturn($res['data']);
         } else {
             $this->ajaxReturn($res);

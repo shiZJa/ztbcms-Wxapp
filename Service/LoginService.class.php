@@ -3,6 +3,7 @@ namespace Wxapp\Service;
 
 use \Exception as Exception;
 
+use System\Service\BaseService;
 use Wxapp\Helper\Util;
 use Wxapp\Lib\AuthAPI;
 use Wxapp\Lib\AuthAPIException;
@@ -10,7 +11,7 @@ use Wxapp\Lib\Constants;
 use Wxapp\Lib\LoginServiceException;
 
 
-class LoginService {
+class LoginService extends BaseService {
     public static function login() {
         try {
             $code = self::getHttpHeader(Constants::WX_HEADER_CODE);
@@ -27,20 +28,12 @@ class LoginService {
             );
             $result['userInfo'] = $loginResult['user_info'];
 
-            return array(
-                'code' => 0,
-                'message' => 'ok',
-                'data' => $result,
-            );
+            return self::createReturn(true, $result, 'ok');
 
         } catch (Exception $e) {
             $error = new LoginServiceException(Constants::ERR_LOGIN_FAILED, $e->getMessage());
 
-            return array(
-                'code' => -1,
-                'message' => $error->getMessage(),
-                'data' => array(),
-            );
+            return self::createReturn(false, [], $error->getMessage());
         }
     }
 

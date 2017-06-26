@@ -19,7 +19,6 @@ class BaseController extends Base {
             $this->ajaxReturn(['status' => false, 'msg' => '未登录', 'code' => "500"]);
         } else {
             $this->userInfo = $res['data']['userInfo'];
-            UserinfoService::updateInfo($this->userInfo);
         }
     }
 }

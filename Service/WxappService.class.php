@@ -69,12 +69,7 @@ class WxappService extends BaseService {
         } else {
             $res = LoginService::login();
         }
-        if ($res['code'] == 0) {
-            //获取登录信息成功
-            return self::createReturn(true, $res['data'], 'ok');
-        } else {
-            return self::createReturn(false, [], $res['message']);
-        }
+        return $res;
     }
 
     /**
