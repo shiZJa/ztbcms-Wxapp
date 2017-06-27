@@ -44,4 +44,15 @@ class OpenController extends AdminBase {
             return $this->ajaxReturn($res);
         }
     }
+
+    public function addTester() {
+        $appid = I('appid');
+        if (IS_POST) {
+            $wechatid = I('post.wechatid');
+            $res = OpenService::bindTester($appid, $wechatid);
+            $this->ajaxReturn($res);
+        }
+        $this->assign('appid', $appid);
+        $this->display('addtester');
+    }
 }

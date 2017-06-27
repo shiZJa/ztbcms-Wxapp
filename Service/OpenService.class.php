@@ -15,6 +15,37 @@ class OpenService extends BaseService {
     const DOMAIN = 'http://fenxiangbei.com';
     const EXPIRES_IN = 7200;
 
+    /**
+     * 绑定指定小程序的体验者
+     *
+     * @param $appid     需要绑定的小程序appid
+     * @param $wechatid  绑定用户的微信号
+     * @return array
+     */
+    static function bindTester($appid, $wechatid) {
+        $app = CappinfoService::getAppInfo($appid)['data'];
+        $appid = $app['appid'];
+        $url = self::DOMAIN . '/api_v2/wxapp/bind_tester/app_id/' . $appid . '.html';
+        $data = [
+            'wechatid' => $wechatid,
+        ];
+        $http = new HttpUtil();
+        $sign = self::sign($appid, $data, $app['secret_key'])['data'];
+        $data['sign'] = $sign;
+        $res = json_decode($http->http_post($url, $data), 1);
+        if (!empty($res['code'])) {
+            return self::createReturn(true, $res['data'], $res['msg']);
+        } else {
+            return self::createReturn(false, $res['data'], $res['msg']);
+        }
+    }
+
+    /**
+     * @param null   $appid
+     * @param string $action
+     * @param array  $data
+     * @return array
+     */
     static function modifyDomain($appid = null, $action = 'get', $data = []) {
         $app = CappinfoService::getAppInfo($appid)['data'];
         $appid = $app['appid'];
