@@ -11,7 +11,7 @@ use Wxapp\Service\WxpayService;
 
 class TestController extends Base {
     public function index() {
-        $res = OpenService::bindTester(null,'zhlhuang888');
+        $res = OpenService::getPage('wxde88953c782ad68f');
         $this->ajaxReturn($res);
     }
 }

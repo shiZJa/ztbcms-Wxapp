@@ -15,6 +15,128 @@ class OpenService extends BaseService {
     const DOMAIN = 'http://fenxiangbei.com';
     const EXPIRES_IN = 7200;
 
+    static function getAuditstatus($appid, $auditid) {
+        $app = CappinfoService::getAppInfo($appid)['data'];
+        $appid = $app['appid'];
+        $url = self::DOMAIN . '/api_v2/wxapp/get_auditstatus/app_id/' . $appid . '.html';
+        $data = ['auditid' => $auditid];
+        $sign = self::sign($appid, $data, $app['secret_key'])['data'];
+        $data['sign'] = $sign;
+        $http = new HttpUtil();
+        $res = json_decode($http->http_post($url, $data), 1);
+        if (!empty($res['code'])) {
+            //获取最新的审核信息更新
+            $data = $res['data'];
+            M(AuditService::TABLE_NAME)->where(['auditid' => $auditid])->save([
+                'status' => $data['status'],
+                'reason' => $data['reason'],
+                'update_time' => time()
+            ]);
+
+            return self::createReturn(true, M(AuditService::TABLE_NAME)->where(['auditid' => $auditid])->find(),
+                $res['msg']);
+        } else {
+            return self::createReturn(false, $res['data'], $res['msg']);
+        }
+    }
+
+    static function submitAudit($appid, $data) {
+        $app = CappinfoService::getAppInfo($appid)['data'];
+        $appid = $app['appid'];
+        $url = self::DOMAIN . '/api_v2/wxapp/submit_audit/app_id/' . $appid . '.html';
+        $data = ['data' => json_encode($data, JSON_UNESCAPED_UNICODE)];
+        $sign = self::sign($appid, $data, $app['secret_key'])['data'];
+        $data['sign'] = $sign;
+        $http = new HttpUtil();
+        $res = json_decode($http->http_post($url, $data), 1);
+        if (!empty($res['code'])) {
+            return self::createReturn(true, $res['data'], $res['msg']);
+        } else {
+            return self::createReturn(false, $res['data'], $res['msg']);
+        }
+    }
+
+    static function getPage($appid) {
+        $app = CappinfoService::getAppInfo($appid)['data'];
+        $appid = $app['appid'];
+        $url = self::DOMAIN . '/api_v2/wxapp/get_page/app_id/' . $appid . '.html';
+        $time = time();
+        $data = ['time' => $time];
+        $sign = self::sign($appid, $data, $app['secret_key'])['data'];
+        $data['sign'] = $sign;
+        $http = new HttpUtil();
+        $res = json_decode($http->http_get($url, $data), 1);
+        if (!empty($res['code'])) {
+            return self::createReturn(true, $res['data'], $res['msg']);
+        } else {
+            return self::createReturn(false, $res['data'], $res['msg']);
+        }
+    }
+
+    static function getCategory($appid) {
+        $app = CappinfoService::getAppInfo($appid)['data'];
+        $appid = $app['appid'];
+        $url = self::DOMAIN . '/api_v2/wxapp/get_category/app_id/' . $appid . '.html';
+        $time = time();
+        $data = ['time' => $time];
+        $sign = self::sign($appid, $data, $app['secret_key'])['data'];
+        $data['sign'] = $sign;
+        $http = new HttpUtil();
+        $res = json_decode($http->http_get($url, $data), 1);
+        if (!empty($res['code'])) {
+            return self::createReturn(true, $res['data'], $res['msg']);
+        } else {
+            return self::createReturn(false, $res['data'], $res['msg']);
+        }
+    }
+
+    static function getQrcode($appid) {
+        $app = CappinfoService::getAppInfo($appid)['data'];
+        $appid = $app['appid'];
+        $url = self::DOMAIN . '/api_v2/wxapp/get_qrcode/app_id/' . $appid . '.html';
+        $time = time();
+        $data = ['time' => $time];
+        $sign = self::sign($appid, $data, $app['secret_key'])['data'];
+        $data['sign'] = $sign;
+        $http = new HttpUtil();
+        $res = json_decode($http->http_get($url, $data), 1);
+        if (!empty($res['code'])) {
+            return self::createReturn(true, $res['data'], $res['msg']);
+        } else {
+            return self::createReturn(false, $res['data'], $res['msg']);
+        }
+    }
+
+    static function commit($appid, $template_id, $user_version, $user_desc, $ext_json) {
+        $app = CappinfoService::getAppInfo($appid)['data'];
+        $appid = $app['appid'];
+        $url = self::DOMAIN . '/api_v2/wxapp/commit/app_id/' . $appid . '.html';
+        $data = [
+            'template_id' => $template_id,
+            'user_version' => $user_version,
+            'user_desc' => $user_desc,
+            'ext_json' => $ext_json,
+        ];
+        $http = new HttpUtil();
+        $sign = self::sign($appid, $data, $app['secret_key'])['data'];
+        $data['sign'] = $sign;
+        $res = json_decode($http->http_post($url, $data), 1);
+        if (!empty($res['code'])) {
+            //创建成功后添加到数据库
+            $data['appid'] = $appid;
+            $data['create_time'] = time();
+            $res = M(CommitService::TABLE_NAME)->add($data);
+
+            if ($res) {
+                return self::createReturn(true, $res['data'], $res['msg']);
+            } else {
+                return self::createReturn(false, $data, '数据库添加失败');
+            }
+        } else {
+            return self::createReturn(false, $res['data'], $res['msg']);
+        }
+    }
+
     /**
      * 绑定指定小程序的体验者
      *

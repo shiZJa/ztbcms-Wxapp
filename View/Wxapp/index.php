@@ -44,6 +44,8 @@
                             <a class="btn btn-info" :href="'{:U('addWxapp')}&id='+item.id">编辑</a>
                             <a class="btn btn-info" :href="'{:U('Wxapp/Open/domainList')}&appid='+item.appid">域名编辑</a>
                             <a class="btn btn-primary" :href="'{:U('Wxapp/Open/addTester')}&appid='+item.appid">添加体验者</a>
+                            <a class="btn btn-primary" :href="'{:U('Wxapp/Open/commit')}&appid='+item.appid">代码提交</a>
+                            <a class="btn btn-primary" :href="'{:U('Wxapp/Open/submitAudit')}&appid='+item.appid">提交审核</a>
                             <a @click="deleteBtn(item.id)" class="btn btn-danger" href="javascript:;">删除</a>
                         </td>
                     </tr>
