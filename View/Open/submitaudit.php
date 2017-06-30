@@ -117,6 +117,9 @@
                     }
                 },
                 getFormatTime: function (value) {
+                    if(!value){
+                        return '无记录';
+                    }
                     var time = new Date(parseInt(value) * 1000);
                     var y = time.getFullYear();
                     var m = time.getMonth() + 1;

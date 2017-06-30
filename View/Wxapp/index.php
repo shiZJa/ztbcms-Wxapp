@@ -76,7 +76,7 @@
                 layer.open({
                     title: title,
                     type: 2,
-                    area: ['60%', '450px'],
+                    area: ['50%', '600px'],
                     content: url
                 });
             },
