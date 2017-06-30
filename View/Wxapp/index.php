@@ -3,16 +3,16 @@
 } ?>
 <Admintemplate file="Common/Head"/>
 <body class="J_scroll_fixed">
-<div class="wrap J_check_wrap">
+<div id="app" class="wrap J_check_wrap">
     <Admintemplate file="Common/Nav"/>
     <h3 style="margin-bottom: 20px;">
         <span>小程序列表</span>
         <span style="float: right;">
-            <a class="btn btn-primary" href="{:U('addWxapp')}">添加</a>
+            <a class="btn btn-primary" @click="openUrl('添加小程序','{:U('addWxapp')}')">添加</a>
         </span>
     </h3>
     <div>
-        <div id="app" class="table_list">
+        <div  class="table_list">
             <table width="100%">
                 <thead>
                 <tr class="h_a">
@@ -41,11 +41,11 @@
                         <td align="center">{{ item.key }}</td>
                         <td align="center">{{ item.is_default == 1 ? '是' : '否' }}</td>
                         <td align="center">
-                            <a class="btn btn-info" :href="'{:U('addWxapp')}&id='+item.id">编辑</a>
-                            <a class="btn btn-info" :href="'{:U('Wxapp/Open/domainList')}&appid='+item.appid">域名编辑</a>
-                            <a class="btn btn-primary" :href="'{:U('Wxapp/Open/addTester')}&appid='+item.appid">添加体验者</a>
-                            <a class="btn btn-primary" :href="'{:U('Wxapp/Open/commit')}&appid='+item.appid">代码提交</a>
-                            <a class="btn btn-primary" :href="'{:U('Wxapp/Open/submitAudit')}&appid='+item.appid">提交审核</a>
+                            <a class="btn btn-info" @click="openUrl('编辑','{:U('addWxapp')}&id='+item.id)">编辑</a>
+                            <a class="btn btn-info" @click="openUrl('域名编辑','{:U('Wxapp/Open/domainList')}&appid='+item.appid)">域名编辑</a>
+                            <a class="btn btn-primary" @click="openUrl('添加体验者','{:U('Wxapp/Open/addTester')}&appid='+item.appid)">添加体验者</a>
+                            <a class="btn btn-primary" @click="openUrl('代码提交','{:U('Wxapp/Open/commit')}&appid='+item.appid)">代码提交</a>
+                            <a class="btn btn-primary" @click="openUrl('提交审核','{:U('Wxapp/Open/submitAudit')}&appid='+item.appid)">提交审核</a>
                             <a @click="deleteBtn(item.id)" class="btn btn-danger" href="javascript:;">删除</a>
                         </td>
                     </tr>
@@ -72,6 +72,14 @@
             page_count: 0
         },
         methods: {
+            openUrl: function (title, url) {
+                layer.open({
+                    title: title,
+                    type: 2,
+                    area: ['60%', '450px'],
+                    content: url
+                });
+            },
             deleteBtn: function (id) {
                 layer.confirm('是否确定删除', {}, function () {
                     $.ajax({

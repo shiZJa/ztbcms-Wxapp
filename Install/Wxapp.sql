@@ -67,3 +67,35 @@ CREATE TABLE `cms_wxapp_template_from` (
   `send_count` tinyint(1) NOT NULL DEFAULT '0' COMMENT '已经发送次数,支付类型可以发送3次',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- 小程序提交代码记录
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_wxapp_commit`;
+CREATE TABLE `cms_wxapp_commit` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `appid` varchar(200) NOT NULL DEFAULT '' COMMENT '所属的公众appid',
+  `template_id` int(11) NOT NULL,
+  `user_version` varchar(255) NOT NULL DEFAULT '',
+  `user_desc` varchar(255) NOT NULL DEFAULT '',
+  `ext_json` text NOT NULL,
+  `create_time` int(11) NOT NULL COMMENT '提交时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- 小程序提交审核记录
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_wxapp_audit`;
+CREATE TABLE `cms_wxapp_audit` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `appid` varchar(200) NOT NULL DEFAULT '' COMMENT '所属公众号appid',
+  `auditid` int(11) NOT NULL COMMENT '提交审核id',
+  `create_time` int(11) NOT NULL COMMENT '提交时间',
+  `status` int(11) NOT NULL COMMENT '审核状态，其中0为审核成功，1为审核失败，2为审核中',
+  `reason` varchar(255) DEFAULT NULL COMMENT '当status=1，审核被拒绝时，返回的拒绝原因',
+  `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
