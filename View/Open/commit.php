@@ -67,6 +67,7 @@
             <div class="form-group">
                 <button @click="submitBtn" class="btn btn-info">添加</button>
             </div>
+            <img style="width:200px;" :src="'{:U('getQrcode')}&appid='+appid" />
         </div>
     </div>
 </div>
