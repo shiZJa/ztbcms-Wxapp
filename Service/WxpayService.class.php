@@ -19,7 +19,7 @@ class WxpayService extends BaseService {
         if ($res['result_code'] == 'SUCCESS' && $res['return_code'] == 'SUCCESS') {
             $sign = $res['sign'];
             unset($res['sign']);
-            $appInfo = CappinfoService::getAppInfo()['data'];
+            $appInfo = CappinfoService::getAppInfo($res['appid'])['data'];
             $local_sign = Util::sign($res, $appInfo['key']);
             if ($local_sign == $sign) {
                 //签名成功
@@ -37,6 +37,7 @@ class WxpayService extends BaseService {
     /**
      * 获取微信支付的前端调用配置
      *
+     * @param        $appid        小程序appid
      * @param        $openid       用户openid
      * @param        $out_trade_no 订单交易单号
      * @param        $total_fee    订单价格，单位分
@@ -44,10 +45,10 @@ class WxpayService extends BaseService {
      * @param string $body         交易简介
      * @return array
      */
-    static function getWxpayConfig($openid, $out_trade_no, $total_fee, $notify_url, $body = '小程序微信支付') {
-        $order_res = self::createOrder($openid, $out_trade_no, $total_fee, $notify_url, $body);
+    static function getWxpayConfig($appid, $openid, $out_trade_no, $total_fee, $notify_url, $body = '小程序微信支付') {
+        $order_res = self::createOrder($appid, $openid, $out_trade_no, $total_fee, $notify_url, $body);
         if ($order_res['status']) {
-            $appInfo = CappinfoService::getAppInfo()['data'];
+            $appInfo = CappinfoService::getAppInfo($appid)['data'];
             $prepay_id = $order_res['data'];
             $data = [
                 'appId' => $appInfo['appid'],
@@ -67,6 +68,7 @@ class WxpayService extends BaseService {
     /**
      * 创建微信支付预支付订单
      *
+     * @param        $appid        小程序appid
      * @param        $openid       用户openid
      * @param        $out_trade_no 订单交易单号
      * @param        $total_fee    订单价格，单位分
@@ -75,8 +77,8 @@ class WxpayService extends BaseService {
      *                             交易简介
      * @return array
      */
-    static function createOrder($openid, $out_trade_no, $total_fee, $notify_url, $body = '小程序微信支付') {
-        $appInfo = CappinfoService::getAppInfo()['data'];
+    static function createOrder($appid,$openid, $out_trade_no, $total_fee, $notify_url, $body = '小程序微信支付') {
+        $appInfo = CappinfoService::getAppInfo($appid)['data'];
         $data = [
             'appid' => $appInfo['appid'],
             'mch_id' => $appInfo['mch_id'],
