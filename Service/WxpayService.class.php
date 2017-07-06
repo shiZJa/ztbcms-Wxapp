@@ -23,6 +23,7 @@ class WxpayService extends BaseService {
             $local_sign = Util::sign($res, $appInfo['key']);
             if ($local_sign == $sign) {
                 //签名成功
+                self::updateWxpayOrderInfo($res);
                 $callback($res);
                 $return = ['return_code' => 'SUCCESS', 'return_msg' => 'ok'];
             } else {
@@ -104,6 +105,16 @@ class WxpayService extends BaseService {
             return self::createReturn(true, $res['prepay_id'], $res['return_msg']);
         } else {
             return self::createReturn(false, $res, $res['return_msg']);
+        }
+    }
+
+    static function updateWxpayOrderInfo($data) {
+        $is_exist = M('WxappPayOrder')->where(['out_trade_no' => $data['out_trade_no']])->find();
+        if ($is_exist) {
+            //如果存在
+            M('WxappPayOrder')->where(['id' => $is_exist['id']])->save($data);
+        } else {
+            M('WxappPayOrder')->add($data);
         }
     }
 }

@@ -97,5 +97,35 @@ CREATE TABLE `cms_wxapp_audit` (
   `status` int(11) NOT NULL COMMENT '审核状态，其中0为审核成功，1为审核失败，2为审核中',
   `reason` varchar(255) DEFAULT NULL COMMENT '当status=1，审核被拒绝时，返回的拒绝原因',
   `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
+  `is_release` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否发布',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- 微信支付记录
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_wxapp_pay_order`;
+CREATE TABLE `cms_wxapp_pay_order` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `return_code` varchar(255) DEFAULT NULL COMMENT '调用结果',
+  `return_msg` varchar(255) DEFAULT NULL COMMENT '调用信息',
+  `appid` varchar(128) DEFAULT NULL COMMENT 'app_id',
+  `mch_id` varchar(128) DEFAULT NULL COMMENT '商户id',
+  `nonce_str` varchar(32) DEFAULT NULL COMMENT '随机码',
+  `sign` varchar(255) DEFAULT NULL COMMENT '签名',
+  `result_code` varchar(255) DEFAULT NULL COMMENT '业务代码',
+  `openid` varchar(255) DEFAULT NULL COMMENT '用户openid',
+  `is_subscribe` varchar(16) DEFAULT NULL COMMENT '是否关注',
+  `trade_type` varchar(32) DEFAULT NULL COMMENT '交易类型',
+  `bank_type` varchar(32) DEFAULT NULL COMMENT '银行',
+  `total_fee` int(11) DEFAULT NULL COMMENT '交易总额',
+  `fee_type` varchar(255) DEFAULT NULL COMMENT '钱币类型',
+  `transaction_id` varchar(255) DEFAULT NULL COMMENT '流水号',
+  `out_trade_no` varchar(255) DEFAULT NULL COMMENT '订单号',
+  `attach` varchar(255) DEFAULT NULL COMMENT '附加值',
+  `time_end` varchar(128) DEFAULT NULL COMMENT '结束时间',
+  `trade_state` varchar(255) DEFAULT NULL COMMENT '交易状态',
+  `trade_state_desc` varchar(255) DEFAULT NULL COMMENT '交易解释',
+  `cash_fee` int(11) DEFAULT NULL COMMENT '现金金额（不知道是什么）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
