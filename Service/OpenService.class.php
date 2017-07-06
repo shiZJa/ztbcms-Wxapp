@@ -15,6 +15,28 @@ class OpenService extends BaseService {
     const DOMAIN = 'http://fenxiangbei.com';
     const EXPIRES_IN = 7200;
 
+    static function release($appid, $auditid) {
+        $app = CappinfoService::getAppInfo($appid)['data'];
+        $appid = $app['appid'];
+        $url = self::DOMAIN . '/api_v2/wxapp/release/app_id/' . $appid . '.html';
+        $data = [];
+        $sign = self::sign($appid, $data, $app['secret_key'])['data'];
+        $data['sign'] = $sign;
+        $http = new HttpUtil();
+        $res = json_decode($http->http_post($url, $data), 1);
+        if (!empty($res['code'])) {
+            M(AuditService::TABLE_NAME)->where([
+                'appid' => $appid,
+                'auditid' => $auditid,
+                'update_time'=>time(),
+            ])->save(['is_release' => 1]); //已经发布
+
+            return self::createReturn(true, $res['data'], $res['msg']);
+        } else {
+            return self::createReturn(false, $res['data'], $res['msg']);
+        }
+    }
+
     static function getAuditstatus($appid, $auditid) {
         $app = CappinfoService::getAppInfo($appid)['data'];
         $appid = $app['appid'];
@@ -50,6 +72,13 @@ class OpenService extends BaseService {
         $http = new HttpUtil();
         $res = json_decode($http->http_post($url, $data), 1);
         if (!empty($res['code'])) {
+            M(AuditService::TABLE_NAME)->add([
+                'appid' => $appid,
+                'auditid' => $res['data'],
+                'create_time' => time(),
+                'status' => 2,
+            ]);
+
             return self::createReturn(true, $res['data'], $res['msg']);
         } else {
             return self::createReturn(false, $res['data'], $res['msg']);

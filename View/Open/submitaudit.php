@@ -79,7 +79,14 @@
                                 {{ audit.create_time | getFormatTime }}
                             </td>
                             <td>
-                                <a @click="releaseBtn" class="btn btn-primary" href="javascript:;">提交</a>
+                                <template v-if="audit.is_release">
+                                    <a class="btn btn-primary"
+                                       href="javascript:;">已发布</a>
+                                </template>
+                                <template v-else>
+                                    <a @click="releaseBtn(audit.appid,audit.auditid)" class="btn btn-primary"
+                                       href="javascript:;">发布</a>
+                                </template>
                             </td>
                         </tr>
                         </tbody>
@@ -117,7 +124,7 @@
                     }
                 },
                 getFormatTime: function (value) {
-                    if(!value){
+                    if (!value) {
                         return '无记录';
                     }
                     var time = new Date(parseInt(value) * 1000);
@@ -132,9 +139,26 @@
                 }
             },
             methods: {
-                releaseBtn: function () {
-                    if (this.audit.status == 2) {
-                        layer.msg('是否提交审核?')
+                releaseBtn: function (appid, auditid) {
+                    var post_data = {appid: appid, auditid: auditid}
+                    if (this.audit.status == 0) {
+                        layer.confirm('是否发布小程序?', {}, function () {
+                            //确定发布
+                            $.ajax({
+                                url: "{:U('release')}",
+                                data: post_data,
+                                dataType: 'json',
+                                type: 'post',
+                                success: function (res) {
+                                    console.log(res)
+                                    if (res.status) {
+                                        layer.msg('发布成功')
+                                    } else {
+                                        layer.msg(res.msg)
+                                    }
+                                }
+                            })
+                        })
                     } else {
                         layer.alert('审核未通过')
                     }

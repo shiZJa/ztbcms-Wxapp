@@ -133,4 +133,12 @@ class OpenController extends AdminBase {
         $res = OpenService::getAuditstatus($appid, $audit['auditid']);
         $this->ajaxReturn($res);
     }
+
+    public function release() {
+        $appid = I('appid');
+        $auditid = I('post.auditid');
+        //获取最新的提交记录
+        $res = OpenService::release($appid, $auditid);
+        $this->ajaxReturn($res);
+    }
 }
