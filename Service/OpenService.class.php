@@ -15,6 +15,29 @@ class OpenService extends BaseService {
     const DOMAIN = 'http://fenxiangbei.com';
     const EXPIRES_IN = 7200;
 
+    static function getAuthoInfo($code) {
+        $url = self::DOMAIN . '/autho_info_api/auth_code/' . $code;
+        $http = new HttpUtil();
+        $res = json_decode($http->http_get($url, []), 1);
+        if (!empty($res['code'])) {
+            //获取授权配置成功，更新配置
+            if (!$res['data']['is_wxapp']) {
+                return self::createReturn(false, $res['data'], '该账号不是小程序');
+            }
+            $data = [
+                'appid' => $res['data']['authorizer_appid'],
+                'secret_key' => $res['data']['secret_key'],
+                'login_duration' => 7200,
+                'session_duration' => 2592000,
+            ];
+            CappinfoService::updateAppInfo($data);
+
+            return self::createReturn(true, $res['data'], $res['msg']);
+        } else {
+            return self::createReturn(false, $res['data'], $res['msg']);
+        }
+    }
+
     static function release($appid, $auditid) {
         $app = CappinfoService::getAppInfo($appid)['data'];
         $appid = $app['appid'];
@@ -28,7 +51,7 @@ class OpenService extends BaseService {
             M(AuditService::TABLE_NAME)->where([
                 'appid' => $appid,
                 'auditid' => $auditid,
-                'update_time'=>time(),
+                'update_time' => time(),
             ])->save(['is_release' => 1]); //已经发布
 
             return self::createReturn(true, $res['data'], $res['msg']);
