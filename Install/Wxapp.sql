@@ -14,7 +14,7 @@ CREATE TABLE `cms_wxapp_appinfo` (
   `key` varchar(255) DEFAULT NULL COMMENT '微信支付key',
   `is_default` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否默认',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- 小程序用户相关信息
@@ -66,7 +66,7 @@ CREATE TABLE `cms_wxapp_template_from` (
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `send_count` tinyint(1) NOT NULL DEFAULT '0' COMMENT '已经发送次数,支付类型可以发送3次',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
 
 -- ----------------------------
@@ -82,7 +82,7 @@ CREATE TABLE `cms_wxapp_commit` (
   `ext_json` text NOT NULL,
   `create_time` int(11) NOT NULL COMMENT '提交时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- ----------------------------
@@ -99,7 +99,7 @@ CREATE TABLE `cms_wxapp_audit` (
   `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
   `is_release` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否发布',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- 微信支付记录
@@ -126,6 +126,6 @@ CREATE TABLE `cms_wxapp_pay_order` (
   `time_end` varchar(128) DEFAULT NULL COMMENT '结束时间',
   `trade_state` varchar(255) DEFAULT NULL COMMENT '交易状态',
   `trade_state_desc` varchar(255) DEFAULT NULL COMMENT '交易解释',
-  `cash_fee` int(11) DEFAULT NULL COMMENT '现金金额（不知道是什么）',
+  `cash_fee` int(11) DEFAULT NULL COMMENT '现金金额',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
