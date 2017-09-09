@@ -19,16 +19,21 @@ class OpenService extends BaseService {
         $url = self::DOMAIN . '/autho_info_api/auth_code/' . $code;
         $http = new HttpUtil();
         $res = json_decode($http->http_get($url, []), 1);
+        //返回格式参考：https://coding.net/t/ztbcms/p/ztbcms-Wxapp/task/3181071
         if (!empty($res['code'])) {
             //获取授权配置成功，更新配置
-            if (!$res['data']['is_wxapp']) {
+            if (!$res['data']['config']['is_wxapp']) {
                 return self::createReturn(false, $res['data'], '该账号不是小程序');
             }
+
             $data = [
-                'appid' => $res['data']['authorizer_appid'],
-                'secret_key' => $res['data']['secret_key'],
+                'appid' => $res['data']['config']['authorizer_appid'],
+                'secret_key' => $res['data']['config']['secret_key'],
                 'login_duration' => 7200,
                 'session_duration' => 2592000,
+                'nick_name' => $res['data']['detail']['nick_name'],
+                'head_img' => $res['data']['detail']['head_img'],
+                'principal_name' => $res['data']['detail']['principal_name'],
             ];
             CappinfoService::updateAppInfo($data);
 
