@@ -19,11 +19,11 @@ class WxpayService extends BaseService {
         if ($res['result_code'] == 'SUCCESS' && $res['return_code'] == 'SUCCESS') {
             $sign = $res['sign'];
             unset($res['sign']);
-            $app = new CappinfoService();
-            $appInfo = $app->select_cappinfo();
+            $appInfo = CappinfoService::getAppInfo($res['appid'])['data'];
             $local_sign = Util::sign($res, $appInfo['key']);
             if ($local_sign == $sign) {
                 //签名成功
+                self::updateWxpayOrderInfo($res);
                 $callback($res);
                 $return = ['return_code' => 'SUCCESS', 'return_msg' => 'ok'];
             } else {
@@ -38,6 +38,7 @@ class WxpayService extends BaseService {
     /**
      * 获取微信支付的前端调用配置
      *
+     * @param        $appid        小程序appid
      * @param        $openid       用户openid
      * @param        $out_trade_no 订单交易单号
      * @param        $total_fee    订单价格，单位分
@@ -45,11 +46,14 @@ class WxpayService extends BaseService {
      * @param string $body         交易简介
      * @return array
      */
-    static function getWxpayConfig($openid, $out_trade_no, $total_fee, $notify_url, $body = '小程序微信支付') {
-        $order_res = self::createOrder($openid, $out_trade_no, $total_fee, $notify_url, $body);
+    static function getWxpayConfig($appid, $openid, $out_trade_no, $total_fee, $notify_url, $body = '小程序微信支付') {
+        $order_res = self::createOrder($appid, $openid, $out_trade_no, $total_fee, $notify_url, $body);
         if ($order_res['status']) {
-            $app = new CappinfoService();
-            $appInfo = $app->select_cappinfo();
+            $appInfo = CappinfoService::getAppInfo($appid)['data'];
+            if (!$appInfo['key']) {
+                //如果没有支付的秘钥，证明商家没有设置微信支付
+                return ['status' => false, 'data' => [], 'code' => 501, 'msg' => '商家没有微信支付'];
+            }
             $prepay_id = $order_res['data'];
             $data = [
                 'appId' => $appInfo['appid'],
@@ -69,6 +73,7 @@ class WxpayService extends BaseService {
     /**
      * 创建微信支付预支付订单
      *
+     * @param        $appid        小程序appid
      * @param        $openid       用户openid
      * @param        $out_trade_no 订单交易单号
      * @param        $total_fee    订单价格，单位分
@@ -77,9 +82,8 @@ class WxpayService extends BaseService {
      *                             交易简介
      * @return array
      */
-    static function createOrder($openid, $out_trade_no, $total_fee, $notify_url, $body = '小程序微信支付') {
-        $app = new CappinfoService();
-        $appInfo = $app->select_cappinfo();
+    static function createOrder($appid, $openid, $out_trade_no, $total_fee, $notify_url, $body = '小程序微信支付') {
+        $appInfo = CappinfoService::getAppInfo($appid)['data'];
         $data = [
             'appid' => $appInfo['appid'],
             'mch_id' => $appInfo['mch_id'],
@@ -101,6 +105,16 @@ class WxpayService extends BaseService {
             return self::createReturn(true, $res['prepay_id'], $res['return_msg']);
         } else {
             return self::createReturn(false, $res, $res['return_msg']);
+        }
+    }
+
+    static function updateWxpayOrderInfo($data) {
+        $is_exist = M('WxappPayOrder')->where(['out_trade_no' => $data['out_trade_no']])->find();
+        if ($is_exist) {
+            //如果存在
+            M('WxappPayOrder')->where(['id' => $is_exist['id']])->save($data);
+        } else {
+            M('WxappPayOrder')->add($data);
         }
     }
 }

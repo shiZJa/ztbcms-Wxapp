@@ -5,7 +5,6 @@ namespace Wxapp\Controller;
 use Common\Controller\Base;
 use Wxapp\Service\ParseRequestService;
 use Wxapp\Service\WxappService;
-use Wxapp\Lib\AuthAPI;
 use Wxapp\Service\UserinfoService;
 
 class UserController extends Base {
@@ -18,15 +17,9 @@ class UserController extends Base {
      */
     public function login() {
         $wxapp = new WxappService();
-        $res = $wxapp->login();
-
-        if ($res['code'] == 0) {
-            $id = $res['data']['id'];
-            $skey = $res['data']['skey'];
-
-            $checkResult = AuthAPI::checkLogin($id, $skey);
-
-            $userInfo = $checkResult['user_info'];
+        $res = $wxapp->login(true);
+        if ($res['status']) {
+            $userInfo = $res['data']['userInfo'];
 
             //检查有没有注册
             $record = M('member')->where(['username' => $userInfo['openId']])->find();
@@ -53,8 +46,9 @@ class UserController extends Base {
                 ];
                 D('Member')->where("userid='%d'", $userid)->save($data);
             }
-
-            UserinfoService::updateInfo($userInfo);
+            $this->ajaxReturn($res['data']);
+        } else {
+            $this->ajaxReturn($res);
         }
     }
 
@@ -79,6 +73,7 @@ class UserController extends Base {
 
     /**
      * 获取小程序用户的用户模型ID
+     *
      * @return int 模型ID
      */
     protected function getCMSModelId() {
@@ -100,9 +95,11 @@ class UserController extends Base {
                     $model->AddModelMember($data['tablename'], $id);
                     //更新缓存
                     D('Member/Member')->member_cache();
+
                     return $id;
                 }
             }
+
             return 0; //创建模型失败
         } else {
             return $record['modelid'];

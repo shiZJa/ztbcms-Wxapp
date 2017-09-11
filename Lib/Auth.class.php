@@ -7,6 +7,7 @@ namespace Wxapp\Lib;
 
 use Wxapp\Service\CappinfoService;
 use Wxapp\Service\CsessioninfoService;
+use Wxapp\Service\UserinfoService;
 
 
 class Auth {
@@ -23,8 +24,7 @@ class Auth {
      * @return mixed
      */
     public function get_id_skey($code, $encrypt_data, $iv = "old") {
-        $cappinfo_service = new CappinfoService();
-        $cappinfo_data = $cappinfo_service->select_cappinfo();
+        $cappinfo_data = CappinfoService::getAppInfo()['data'];
         if (empty($cappinfo_data) || ($cappinfo_data == false)) {
             $ret['returnCode'] = ReturnCode::MA_NO_APPID;
             $ret['returnMessage'] = 'NO_APPID';
@@ -32,8 +32,6 @@ class Auth {
         } else {
             $appid = $cappinfo_data['appid'];
             $secret = $cappinfo_data['secret'];
-            $ip = $cappinfo_data['ip'];
-            $qcloud_appid = $cappinfo_data['qcloud_appid'];
             $login_duration = $cappinfo_data['login_duration'];
             $url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' . $appid . '&secret=' . $secret . '&js_code=' . $code . '&grant_type=authorization_code';
             $http_util = new HttpUtil();
@@ -73,16 +71,18 @@ class Auth {
                             "openid" => $openid,
                             "session_key" => $session_key,
                             "user_info" => $user_info,
-                            "login_duration" => $login_duration
+                            "login_duration" => $login_duration,
+                            "appid" => $appid,
                         );
 
                         $csessioninfo_service = new CsessioninfoService();
                         $change_result = $csessioninfo_service->change_csessioninfo($params);
+                        $user_info_arr = json_decode(base64_decode($user_info), 1);
                         if ($change_result) {
                             $id = $csessioninfo_service->get_id_csessioninfo($openid);
                             $arr_result['id'] = $id;
                             $arr_result['skey'] = $skey;
-                            $arr_result['user_info'] = json_decode(base64_decode($user_info));
+                            $arr_result['user_info'] = $user_info_arr;
                             $arr_result['duration'] = $json_message['expires_in'];
                             $ret['returnCode'] = ReturnCode::MA_OK;
                             $ret['returnMessage'] = 'NEW_SESSION_SUCCESS';
@@ -95,7 +95,7 @@ class Auth {
                             } else {
                                 $arr_result['id'] = $change_result;
                                 $arr_result['skey'] = $skey;
-                                $arr_result['user_info'] = json_decode(base64_decode($user_info));
+                                $arr_result['user_info'] = $user_info_arr;
                                 $arr_result['duration'] = $json_message['expires_in'];
                                 $ret['returnCode'] = ReturnCode::MA_OK;
                                 $ret['returnMessage'] = 'UPDATE_SESSION_SUCCESS';
@@ -119,38 +119,8 @@ class Auth {
                 $ret['returnMessage'] = 'WEIXIN_NET_ERR';
                 $ret['returnData'] = '';
             }
-
-            /**
-             * 上报数据部分
-             */
-            /*  $report_data = new ready_for_report_data();
-
-              $arr_report_data = array(
-                  "ip" => $ip,
-                  "appid" => $qcloud_appid,
-                  "login_count" => 0,
-                  "login_sucess" => 0,
-                  "auth_count" => 0,
-                  "auth_sucess" => 0
-              );
-
-              if ($report_data->check_data()) {
-                  $report_data->ready_data("login_count");
-              } else {
-                  $arr_report_data['login_count'] = 1;
-                  $report_data->write_report_data(json_encode($arr_report_data));
-              }
-              if ($ret['returnCode'] == 0) {
-                  if ($report_data->check_data()) {
-                      $report_data->ready_data("login_sucess");
-                  } else {
-                      $arr_report_data['login_count'] = 1;
-                      $arr_report_data['login_sucess'] = 1;
-                      $report_data->write_report_data(json_encode($arr_report_data));
-                  }
-              }*/
         }
-
+        UserinfoService ::updateInfo($user_info_arr,$appid);
         return $ret;
     }
 
@@ -162,8 +132,7 @@ class Auth {
      */
     public function auth($id, $skey) {
         //根据Id和skey 在cSessionInfo中进行鉴权，返回鉴权失败和密钥过期
-        $cappinfo_service = new CappinfoService();
-        $cappinfo_data = $cappinfo_service->select_cappinfo();
+        $cappinfo_data = CappinfoService::getAppInfo()['data'];
         if (empty($cappinfo_data) || ($cappinfo_data == false)) {
             $ret['returnCode'] = ReturnCode::MA_NO_APPID;
             $ret['returnMessage'] = 'NO_APPID';
@@ -171,9 +140,6 @@ class Auth {
         } else {
             $login_duration = $cappinfo_data['login_duration'];
             $session_duration = $cappinfo_data['session_duration'];
-            $ip = $cappinfo_data['ip'];
-            $qcloud_appid = $cappinfo_data['qcloud_appid'];
-
             $params = array(
                 "uuid" => $id,
                 "skey" => $skey,
@@ -193,37 +159,6 @@ class Auth {
                 $ret['returnMessage'] = 'AUTH_FAIL';
                 $ret['returnData'] = '';
             }
-
-            /**
-             * 上报数据部分
-             */
-            /* $report_data = new ready_for_report_data();
-
-             $arr_report_data = array(
-                 "ip" => $ip,
-                 "appid" => $qcloud_appid,
-                 "login_count" => 0,
-                 "login_sucess" => 0,
-                 "auth_count" => 0,
-                 "auth_sucess" => 0
-             );
-
-             if ($report_data->check_data()) {
-                 $report_data->ready_data("auth_count");
-             } else {
-                 $arr_report_data['auth_count'] = 1;
-                 $report_data->write_report_data(json_encode($arr_report_data));
-             }
-             if ($ret['returnCode'] == 0) {
-                 if ($report_data->check_data()) {
-                     $report_data->ready_data("auth_sucess");
-                 } else {
-                     $arr_report_data['auth_count'] = 1;
-                     $arr_report_data['auth_sucess'] = 1;
-                     $report_data->write_report_data(json_encode($arr_report_data));
-                 }
-             }*/
-
         }
 
         return $ret;
@@ -267,47 +202,4 @@ class Auth {
 
         return $ret;
     }
-
-    public function init_data($appid, $secret, $qcloud_appid, $ip) {
-        $cappinfo_service = new CappinfoService();
-        $cappinfo_data = $cappinfo_service->select_cappinfo();
-        $params = array(
-            "appid" => $appid,
-            "secret" => $secret,
-            "qcloud_appid" => $qcloud_appid,
-            "ip" => $ip
-        );
-
-        if (empty($cappinfo_data)) {
-            if ($cappinfo_service->insert_cappinfo($params)) {
-                $ret['returnCode'] = ReturnCode::MA_OK;
-                $ret['returnMessage'] = 'INIT_APPINFO_SUCCESS';
-                $ret['returnData'] = '';
-            } else {
-                $ret['returnCode'] = ReturnCode::MA_INIT_APPINFO_ERR;
-                $ret['returnMessage'] = 'INIT_APPINFO_FAIL';
-                $ret['returnData'] = '';
-            }
-        } else {
-            if ($cappinfo_data != false) {
-                $cappinfo_service->delete_cappinfo();
-                if ($cappinfo_service->insert_cappinfo($params)) {
-                    $ret['returnCode'] = ReturnCode::MA_OK;
-                    $ret['returnMessage'] = 'INIT_APPINFO_SUCCESS';
-                    $ret['returnData'] = '';
-                } else {
-                    $ret['returnCode'] = ReturnCode::MA_INIT_APPINFO_ERR;
-                    $ret['returnMessage'] = 'INIT_APPINFO_FAIL';
-                    $ret['returnData'] = '';
-                }
-            } else {
-                $ret['returnCode'] = ReturnCode::MA_MYSQL_ERR;
-                $ret['returnMessage'] = 'MYSQL_ERR';
-                $ret['returnData'] = '';
-            }
-        }
-
-        return $ret;
-    }
-
 }

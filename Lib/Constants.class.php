@@ -8,7 +8,8 @@ class Constants {
 
     const WX_HEADER_ID = 'X-WX-Id';
     const WX_HEADER_SKEY = 'X-WX-Skey';
-
+    const WX_STORE_ID = 'X-WX-StoreId';
+    const WX_Appid = 'X-WX-Appid';
     const WX_SESSION_MAGIC_ID = 'F2C224D4-2BCE-4C64-AF9F-A6D872000D1A';
 
     const ERR_LOGIN_FAILED = 'ERR_LOGIN_FAILED';

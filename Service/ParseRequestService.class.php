@@ -72,29 +72,9 @@ class ParseRequestService extends BaseService {
                                     $ret['returnData'] = '';
                                 }
                             } else {
-                                if ($json_decode['interface']['interfaceName'] == 'qcloud.cam.initdata') {
-                                    if (isset($json_decode['interface']['para']['appid']) && isset($json_decode['interface']['para']['secret']) && isset($json_decode['interface']['para']['qcloud_appid']) && isset($json_decode['interface']['para']['ip']) && isset($json_decode['interface']['para']['cdb_ip']) && isset($json_decode['interface']['para']['cdb_port']) && isset($json_decode['interface']['para']['cdb_user_name']) && isset($json_decode['interface']['para']['cdb_pass_wd'])) {
-                                        $appid = $json_decode['interface']['para']['appid'];
-                                        $secret = $json_decode['interface']['para']['secret'];
-                                        $qcloud_appid = $json_decode['interface']['para']['qcloud_appid'];
-                                        $ip = $json_decode['interface']['para']['ip'];
-                                        $cdb_ip = $json_decode['interface']['para']['cdb_ip'];
-                                        $cdb_port = $json_decode['interface']['para']['cdb_port'];
-                                        $cdb_user_name = $json_decode['interface']['para']['cdb_user_name'];
-                                        $cdb_pass_wd = $json_decode['interface']['para']['cdb_pass_wd'];
-                                        $auth = new Auth();
-                                        $ret = $auth->init_data($appid, $secret, $qcloud_appid, $ip, $cdb_ip, $cdb_port,
-                                            $cdb_user_name, $cdb_pass_wd);
-                                    } else {
-                                        $ret['returnCode'] = ReturnCode::MA_PARA_ERR;
-                                        $ret['returnMessage'] = 'PARA_ERR';
-                                        $ret['returnData'] = '';
-                                    }
-                                } else {
-                                    $ret['returnCode'] = ReturnCode::MA_INTERFACE_ERR;
-                                    $ret['returnMessage'] = 'INTERFACENAME_PARA_ERR';
-                                    $ret['returnData'] = '';
-                                }
+                                $ret['returnCode'] = ReturnCode::MA_INTERFACE_ERR;
+                                $ret['returnMessage'] = 'INTERFACENAME_PARA_ERR';
+                                $ret['returnData'] = '';
                             }
                         }
                     }

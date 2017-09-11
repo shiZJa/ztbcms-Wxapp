@@ -59,10 +59,17 @@ class WxappService extends BaseService {
     /**
      * 调用登录sdk
      *
+     * @param bool $is_open 是否open平台下登录
+     * @param null $appid
      * @return array
      */
-    public function login() {
-        return LoginService::login();
+    public function login($is_open = false, $appid = null) {
+        if ($is_open) {
+            $res = OpenService::login($appid);
+        } else {
+            $res = LoginService::login();
+        }
+        return $res;
     }
 
     /**
@@ -71,6 +78,12 @@ class WxappService extends BaseService {
      * @return array
      */
     public function check() {
-        return LoginService::check();
+        $res = LoginService::check();
+        if ($res['code'] == 0) {
+            //获取登录信息成功
+            return self::createReturn(true, $res['data']['userInfo'], 'ok');
+        } else {
+            return self::createReturn(false, [], $res['message']);
+        }
     }
 }
