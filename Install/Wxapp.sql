@@ -55,7 +55,7 @@ CREATE TABLE `cms_wxapp_userinfo` (
   `update_time` int(11) DEFAULT NULL COMMENT '更新时间',
   `appid` varchar(200) DEFAULT NULL COMMENT '所属appid',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- 小程序发送模板消息触发的来源
