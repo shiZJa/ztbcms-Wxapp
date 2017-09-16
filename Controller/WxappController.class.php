@@ -37,8 +37,8 @@ class WxappController extends AdminBase {
                     M('Config')->add($add_item);
                 }
             }
-            cache('Config',null);
-            $this->success('保存成功',U('setting'));
+            cache('Config', null);
+            $this->success('保存成功', U('setting'));
         } else {
             $config = cache('Config');
             $this->assign('config', $config);
@@ -60,12 +60,16 @@ class WxappController extends AdminBase {
             ];
             $this->ajaxReturn(self::createReturn(true, $data, 'ok'));
         }
+        $config = cache('Config');
+        $this->assign('config', $config);
         $this->display('index');
     }
 
     public function addWxapp() {
         $id = I('get.id');
+        $config = cache('Config');
         $this->assign('id', $id);
+        $this->assign('config', $config);
         $this->display('addwxapp');
     }
 
@@ -97,9 +101,9 @@ class WxappController extends AdminBase {
             $result = $Model->add(I('post.'));
         }
         if ($result) {
-            $this->success("操作成功", U('index'));
+            $this->ajaxReturn(self::createReturn(true, '', '操作成功'));
         } else {
-            $this->error("没有更新或者更新失败");
+            $this->ajaxReturn(self::createReturn(false, '', ''));
         }
     }
 
