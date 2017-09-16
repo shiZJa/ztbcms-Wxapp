@@ -13,11 +13,44 @@ use Wxapp\Service\CappinfoService;
  */
 class WxappController extends AdminBase {
 
+    /**
+     * 模块设置页面
+     */
+    function setting() {
+        if (IS_POST) {
+            $wxapp_is_author = I('wxapp_is_author');
+            $wxapp_template_id = I('wxapp_template_id');
+            $data = [
+                'wxapp_template_id' => $wxapp_template_id,
+                'wxapp_is_author' => $wxapp_is_author
+            ];
+            foreach ($data as $key => $val) {
+                $add_item = [
+                    'varname' => $key,
+                    'value' => $val,
+                    'groupid' => 20
+                ];
+                $is_exist = M('Config')->where(['varname' => $key])->find();
+                if ($is_exist) {
+                    M('Config')->where(['varname' => $key])->save($add_item);
+                } else {
+                    M('Config')->add($add_item);
+                }
+            }
+            cache('Config',null);
+            $this->success('保存成功',U('setting'));
+        } else {
+            $config = cache('Config');
+            $this->assign('config', $config);
+            $this->display();
+        }
+    }
+
     public function index() {
         if (IS_AJAX) {
             $page = I('page', 1);
             $limit = I('limit', 1);
-            $wxapps = M(CappinfoService::TABLE_NAME)->page($page,$limit)->select();
+            $wxapps = M(CappinfoService::TABLE_NAME)->page($page, $limit)->select();
             $total = M(CappinfoService::TABLE_NAME)->count();
             $data = [
                 'lists' => $wxapps ? $wxapps : [],
@@ -36,12 +69,6 @@ class WxappController extends AdminBase {
         $this->display('addwxapp');
     }
 
-    /**
-     * 展示设置页面
-     */
-    function setting() {
-        $this->display();
-    }
 
     /**
      * 获取微信小程序参数
