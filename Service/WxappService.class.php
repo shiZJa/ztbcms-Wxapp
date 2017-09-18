@@ -59,12 +59,12 @@ class WxappService extends BaseService {
     /**
      * 调用登录sdk
      *
-     * @param bool $is_open 是否open平台下登录
      * @param null $appid
      * @return array
      */
-    public function login($is_open = false, $appid = null) {
-        if ($is_open) {
+    public function login($appid = null) {
+        $isAuthor = cache('Config.wxapp_is_author');
+        if ($isAuthor) {
             $res = OpenService::login($appid);
         } else {
             $res = LoginService::login();

@@ -17,7 +17,7 @@ class UserController extends Base {
      */
     public function login() {
         $wxapp = new WxappService();
-        $res = $wxapp->login(true);
+        $res = $wxapp->login();
         if ($res['status']) {
             $userInfo = $res['data']['userInfo'];
 

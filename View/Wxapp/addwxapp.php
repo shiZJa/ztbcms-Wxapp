@@ -8,7 +8,7 @@
     <div>
         <div class="h_a">配置</div>
         <div id="app" class="hidden">
-            <form action="{:U('Wxapp/doSetting')}" method="post">
+            <form id="form_id" action="javascript:;">
                 <div class="table_full">
                     <table class="table_form" width="100%" cellspacing="0">
                         <thead>
@@ -29,12 +29,15 @@
                             <td><input class="form-control" type="text" name="secret" v-model="settings.secret"></td>
                             <td></td>
                         </tr>
-                        <tr>
-                            <td>secret_key</td>
-                            <td><input class="form-control" type="text" name="secret_key" v-model="settings.secret_key">
-                            </td>
-                            <td></td>
-                        </tr>
+                        <if condition="$config[wxapp_is_author] eq 1">
+                            <tr>
+                                <td>secret_key</td>
+                                <td><input class="form-control" type="text" name="secret_key"
+                                           v-model="settings.secret_key">
+                                </td>
+                                <td>第三方授权平台的 secret_key</td>
+                            </tr>
+                        </if>
                         <tr>
                             <td>mch_id</td>
                             <td><input class="form-control" type="text" name="mch_id" v-model="settings.mch_id">
@@ -72,23 +75,36 @@
                     </table>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-info">设置</button>
+                    <button @click="submitBtn" class="btn btn-info">设置</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 <script src="//cdn.bootcss.com/vue/2.1.5/vue.min.js"></script>
+<script src="//cdn.bootcss.com/layer/3.0.1/layer.js"></script>
 <script>
     new Vue({
         el: "#app",
         data: {
             id: '{$id}',
             settings: {
-                is_default: 0
+                is_default: 0,
+                login_duration: 7200,
+                session_duration: 2592000
             }
         },
         methods: {
+            submitBtn: function () {
+                $.post('{:U("doSetting")}', $('#form_id').serialize(), function (res) {
+                    console.log(res)
+                    if (res.status) {
+                        layer.msg('更新成功',{},function () {
+                            window.parent.layer.closeAll()
+                        })
+                    }
+                }, 'json')
+            },
             getSettings: function () {
                 var that = this;
                 if (this.id) {

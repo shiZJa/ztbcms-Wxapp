@@ -63,7 +63,10 @@ class OpenController extends AdminBase {
     public function commit() {
         $appid = I('appid');
         if (IS_POST) {
-            $template_id = I('post.template_id');
+            $template_id = cache('Config.wxapp_template_id');
+            if(!$template_id){
+                $this->ajaxReturn(self::createReturn(false,'','没有设置代码模板id'));
+            }
             $user_version = I('post.user_version');
             $user_desc = I('post.user_desc');
             $ext = I('post.ext');
