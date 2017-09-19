@@ -10,7 +10,7 @@ class TemplateService extends BaseService {
     static function addTemplateFrom($openid, $form_id, $from_type) {
         $data = [
             'openid' => $openid,
-            'from_id' => $form_id,
+            'form_id' => $form_id,
             'from_type' => $from_type,
             'create_time' => time()
         ];
