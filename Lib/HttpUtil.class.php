@@ -10,30 +10,29 @@ class HttpUtil {
      *
      * @param string $url
      * @param array  $param
+     * @param boolean  $is_json
      * @return string content
      */
-    public function http_post($url, $param) {
+    public function http_post($url, $param, $is_json = false) {
 
         $oCurl = curl_init();
         if (stripos($url, "https://") !== false) {
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, false);
         }
-        if (is_string($param)) {
-            $strPOST = $param;
-        } else {
-            $aPOST = array();
-            foreach ($param as $key => $val) {
-                $aPOST[] = $key . "=" . urlencode($val);
-            }
-            $strPOST = join("&", $aPOST);
-        }
         curl_setopt($oCurl, CURLOPT_URL, $url);
         curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($oCurl, CURLOPT_POST, true);
-        curl_setopt($oCurl, CURLOPT_POSTFIELDS, $strPOST);
+        if ($is_json) {
+            curl_setopt($oCurl, CURLOPT_POSTFIELDS, json_encode($param));
+            curl_setopt($oCurl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        }else{
+            curl_setopt($oCurl, CURLOPT_POSTFIELDS, $param);
+        }
+
         $sContent = curl_exec($oCurl);
         $aStatus = curl_getinfo($oCurl);
+
         curl_close($oCurl);
         if (intval($aStatus["http_code"]) == 200) {
             return $sContent;
@@ -48,11 +47,18 @@ class HttpUtil {
      * @param $url
      * @return bool|mixed
      */
-    public function http_get($url) {
+    public function http_get($url,$params) {
         $oCurl = curl_init();
         if (stripos($url, "https://") !== false) {
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, false);
+        }
+
+        if (is_array($params)) {
+            $url .= '?';
+            foreach ($params as $key => $value) {
+                $url .= $key . '=' . $value . '&';
+            }
         }
         curl_setopt($oCurl, CURLOPT_URL, $url);
         curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1);

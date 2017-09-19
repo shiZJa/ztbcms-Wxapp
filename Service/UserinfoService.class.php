@@ -8,10 +8,12 @@ class UserinfoService extends BaseService {
 
     /**
      * 更新用户信息
-     * @param $info
+     *
+     * @param      $info
+     * @param null $appid
      * @return array
      */
-    static function updateInfo($info) {
+    static function updateInfo($info, $appid = null) {
         $data = [
             'open_id' => $info['openId'],
             'nick_name' => $info['nickName'],
@@ -20,7 +22,8 @@ class UserinfoService extends BaseService {
             'city' => $info['city'],
             'province' => $info['province'],
             'country' => $info['country'],
-            'avatar_url' => $info['avatarUrl']
+            'avatar_url' => $info['avatarUrl'],
+            'appid' => $appid
         ];
 
         $is_exist = M(self::TABLE_NAME)->where(['open_id' => $data['open_id']])->find();

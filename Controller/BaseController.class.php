@@ -14,12 +14,11 @@ class BaseController extends Base {
         parent::_initialize();
         $wxappService = new WxappService();
         $res = $wxappService->check();
-        if ($res['code'] != 0) {
+        if (!$res['status']) {
             //没有登录
             $this->ajaxReturn(['status' => false, 'msg' => '未登录', 'code' => "500"]);
         } else {
-            $this->userInfo = $res['data']['userInfo'];
-            UserinfoService::updateInfo($this->userInfo);
+            $this->userInfo = $res['data'];
         }
     }
 }

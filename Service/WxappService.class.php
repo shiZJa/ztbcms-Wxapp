@@ -12,7 +12,7 @@ class WxappService extends BaseService {
     function __construct() {
         Conf::setup([
             'ServerHost' => $_SERVER['HTTP_HOST'],
-            'AuthServerUrl' => U('Wxapp/User/mina_auth'),
+            'AuthServerUrl' => U('Wxapp/User/minaAuth'),
         ]);
     }
 
@@ -59,10 +59,17 @@ class WxappService extends BaseService {
     /**
      * 调用登录sdk
      *
+     * @param null $appid
      * @return array
      */
-    public function login() {
-        return LoginService::login();
+    public function login($appid = null) {
+        $isAuthor = cache('Config.wxapp_is_author');
+        if ($isAuthor) {
+            $res = OpenService::login($appid);
+        } else {
+            $res = LoginService::login();
+        }
+        return $res;
     }
 
     /**
@@ -71,6 +78,12 @@ class WxappService extends BaseService {
      * @return array
      */
     public function check() {
-        return LoginService::check();
+        $res = LoginService::check();
+        if ($res['code'] == 0) {
+            //获取登录信息成功
+            return self::createReturn(true, $res['data']['userInfo'], 'ok');
+        } else {
+            return self::createReturn(false, [], $res['message']);
+        }
     }
 }
