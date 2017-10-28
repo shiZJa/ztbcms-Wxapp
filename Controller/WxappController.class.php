@@ -93,7 +93,7 @@ class WxappController extends AdminBase {
         $Model = M('WxappAppinfo');
         if (I('post.is_default') == 1) {
             //如果设置成默认，则其他配置就非默认
-            echo $Model->where(['is_default' => 1])->save(['is_default' => 0]);
+            $Model->where(['is_default' => 1])->save(['is_default' => 0]);
         }
         if (I('post.id')) {
             $result = $Model->data(I('post.'))->save();
