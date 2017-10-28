@@ -1,7 +1,7 @@
 <?php
 namespace Wxapp\Service;
 
-use Shop\Service\BaseService;
+use System\Service\BaseService;
 use Wxapp\Helper\Util;
 use Wxapp\Lib\HttpUtil;
 
