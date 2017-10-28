@@ -3,17 +3,19 @@ namespace Wxapp\Lib;
 
 use \Exception as Exception;
 
-use Wxapp\Helper\Logger as Logger;
+use Think\Log;
 use Wxapp\Helper\Request as Request;
 
 class AuthAPI {
     public static function login($code, $encrypt_data, $iv) {
         $param = compact('code', 'encrypt_data', 'iv');
+
         return self::sendRequest(Constants::INTERFACE_LOGIN, $param);
     }
 
     public static function checkLogin($id, $skey) {
         $param = compact('id', 'skey');
+
         return self::sendRequest(Constants::INTERFACE_CHECK, $param);
     }
 
@@ -22,17 +24,18 @@ class AuthAPI {
         $timeout = Conf::getNetworkTimeout();
         $data = self::packReqData($apiName, $apiParam);
 
-        $begin = round(microtime(TRUE) * 1000);
+        $begin = round(microtime(true) * 1000);
         list($status, $body) = array_values(Request::jsonPost(compact('url', 'timeout', 'data')));
-        $end = round(microtime(TRUE) * 1000);
+        $end = round(microtime(true) * 1000);
 
         // 记录请求日志
-        Logger::debug("POST {$url} => [{$status}]", array(
+        Log::write(json_encode(array(
             '[请求]' => $data,
             '[响应]' => $body,
             '[耗时]' => sprintf('%sms', $end - $begin),
-        ));
+        )), Log::DEBUG);
         if ($status !== 200) {
+
             throw new Exception('请求鉴权 API 失败，网络异常或鉴权服务器错误');
         }
 
@@ -43,7 +46,8 @@ class AuthAPI {
         }
 
         if ($body['returnCode'] !== Constants::RETURN_CODE_SUCCESS) {
-            throw new AuthAPIException("鉴权服务调用失败：{$body['returnCode']} - {$body['returnMessage']}", $body['returnCode']);
+            throw new AuthAPIException("鉴权服务调用失败：{$body['returnCode']} - {$body['returnMessage']}",
+                $body['returnCode']);
         }
 
         return $body['returnData'];
