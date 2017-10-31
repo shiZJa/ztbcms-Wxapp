@@ -1,7 +1,7 @@
 <?php
 namespace Wxapp\Service;
 
-use System\Service\BaseService;
+use Shop\Service\BaseService;
 use Wxapp\Helper\Util;
 use Wxapp\Lib\HttpUtil;
 
@@ -11,6 +11,43 @@ use Wxapp\Lib\HttpUtil;
  * @package Wxapp\Service
  */
 class WxpayService extends BaseService {
+    const CERT_PATH = SITE_PATH . 'cert/apiclient_cert.pem';
+    const KEY_PATH = SITE_PATH . 'cert/apiclient_key.pem';
+
+    /**
+     * 退款请求
+     *
+     * @param $appid
+     * @param $out_trade_no
+     * @param $out_refund_no
+     * @param $total_fee
+     * @param $refund_fee
+     * @return array
+     */
+    public function refund($appid, $out_trade_no, $out_refund_no, $total_fee, $refund_fee) {
+        $appInfo = CappinfoService::getAppInfo($appid)['data'];
+        $data = [
+            'appid' => $appInfo['appid'],
+            'mch_id' => $appInfo['mch_id'],
+            'nonce_str' => md5(time()),
+            'out_trade_no' => $out_trade_no,
+            'out_refund_no' => $out_refund_no,
+            'total_fee' => $total_fee,
+            'refund_fee' => $refund_fee,
+        ];
+        $data['sign'] = Util::sign($data, $appInfo['key']);
+        $http = new HttpUtil();
+        $post_res = $http->http_post_ssl('https://api.mch.weixin.qq.com/secapi/pay/refund', Util::arrayToXml($data),
+            self::CERT_PATH, self::KEY_PATH);
+        $res = Util::xmlToArray($post_res);
+        self::updateWxpayRefundInfo($res);
+        if ($res['return_code'] == 'SUCCESS' && $res['result_code'] == 'SUCCESS') {
+            //退款成功
+            return self::createReturn(true, $res, '退款成功');
+        } else {
+            return self::createReturn(false, $res, $res['return_msg']);
+        }
+    }
 
     public function pay_notify($callback) {
         $request = file_get_contents("php://input");
@@ -108,13 +145,33 @@ class WxpayService extends BaseService {
         }
     }
 
+    static function updateWxpayRefundInfo($data) {
+        $is_exist = M('WxappPayRefund')->where(['out_refund_no' => $data['out_refund_no']])->find();
+        if ($is_exist) {
+            //如果存在
+            $res = M('WxappPayRefund')->where(['id' => $is_exist['id']])->save($data);
+        } else {
+            $res = M('WxappPayRefund')->add($data);
+        }
+        if ($res) {
+            return self::createReturn(true, '', '');
+        } else {
+            return self::createReturn(false, '', '');
+        }
+    }
+
     static function updateWxpayOrderInfo($data) {
         $is_exist = M('WxappPayOrder')->where(['out_trade_no' => $data['out_trade_no']])->find();
         if ($is_exist) {
             //如果存在
-            M('WxappPayOrder')->where(['id' => $is_exist['id']])->save($data);
+            $res = M('WxappPayOrder')->where(['id' => $is_exist['id']])->save($data);
         } else {
-            M('WxappPayOrder')->add($data);
+            $res = M('WxappPayOrder')->add($data);
+        }
+        if ($res) {
+            return self::createReturn(true, '', '');
+        } else {
+            return self::createReturn(false, '', '');
         }
     }
 }

@@ -131,4 +131,31 @@ CREATE TABLE `cms_wxapp_pay_order` (
   `trade_state_desc` varchar(255) DEFAULT NULL COMMENT '交易解释',
   `cash_fee` int(11) DEFAULT NULL COMMENT '现金金额',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- 微信支付退款记录
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_wxapp_pay_refund`;
+CREATE TABLE `cms_wxapp_pay_refund` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `appid` varchar(255) DEFAULT '',
+  `cash_fee` int(11) NOT NULL DEFAULT '0',
+  `cash_refund_fee` int(11) NOT NULL DEFAULT '0',
+  `coupon_refund_count` int(11) NOT NULL DEFAULT '0',
+  `coupon_refund_fee` int(11) NOT NULL DEFAULT '0',
+  `mch_id` int(11) NOT NULL DEFAULT '0',
+  `nonce_str` varchar(255) DEFAULT '',
+  `out_refund_no` varchar(255) DEFAULT '',
+  `out_trade_no` varchar(255) DEFAULT '',
+  `refund_channel` varchar(255) DEFAULT '',
+  `refund_fee` int(11) NOT NULL DEFAULT '0',
+  `refund_id` varchar(255) DEFAULT '',
+  `result_code` varchar(32) DEFAULT '',
+  `return_code` varchar(32) DEFAULT '',
+  `return_msg` varchar(255) DEFAULT '',
+  `sign` varchar(255) DEFAULT '',
+  `total_fee` int(11) NOT NULL DEFAULT '0',
+  `transaction_id` varchar(255) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
