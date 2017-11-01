@@ -7,6 +7,28 @@ use Wxapp\Lib\HttpUtil;
 class TemplateService extends BaseService {
     const TABLE_NAME = 'WxappTemplateFrom';
 
+    static function updateTemplateFrom($id, $result) {
+        $res = M(self::TABLE_NAME)->where(['id' => $id])->save(['result' => $result, 'send_count' => 1]);
+        if ($res) {
+            return self::createReturn(true, $res, 'ok');
+        } else {
+            return self::createReturn(false, null, '没有更新');
+        }
+    }
+
+    static function getTemplateFrom($openid) {
+        $where = [
+            'openid' => $openid,
+            'send_count' => 0
+        ];
+        $res = M(self::TABLE_NAME)->where($where)->find();
+        if ($res) {
+            return self::createReturn(true, $res, 'ok');
+        } else {
+            return self::createReturn(false, null, '没有form数据');
+        }
+    }
+
     static function addTemplateFrom($openid, $form_id, $from_type) {
         $data = [
             'openid' => $openid,
@@ -22,6 +44,18 @@ class TemplateService extends BaseService {
         }
     }
 
+    /**
+     * 发送模板消息
+     *
+     * @param        $openid           接受用户openid
+     * @param        $template_id      模板消息模板id
+     * @param        $form_id          发送模板消息所需的formId
+     * @param        $page_url         页面跳转地址
+     * @param        $data             模板详细新消息
+     * @param string $color
+     * @param string $emphasis_keyword 模板需要放大的关键词，不填则默认无放大
+     * @return array
+     */
     static function sendTemplate(
         $openid,
         $template_id,

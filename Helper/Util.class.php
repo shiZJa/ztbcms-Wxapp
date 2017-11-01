@@ -17,8 +17,6 @@ class Util {
 
         http_response_code($statusCode);
         echo json_encode($obj, JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE);
-
-        Logger::debug("Util::writeJsonResult => [{$statusCode}]", $obj);
     }
 
     public static function getPostPayload() {
