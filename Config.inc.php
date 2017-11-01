@@ -11,7 +11,7 @@ return array(
     //模块简介
     'introduce' => '对接纷享呗第三方应用小程序接口，授权/发布/审核等',
     //模块介绍地址
-    'address' => 'http://www.ztbcms.com',
+    'address' => 'https://www.kancloud.cn/ztbcms/wxapp',
     //模块作者
     'author' => 'zhlhuang',
     //作者地址
