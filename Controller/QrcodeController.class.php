@@ -10,6 +10,7 @@ class QrcodeController extends Base {
         header('Content-Type:image/png');
         $res = QrcodeService::getwxacode('/pages/index/index', '480');
         echo $res;
+        exit();
     }
 
     public function getwxacodeunlimit() {
@@ -17,6 +18,7 @@ class QrcodeController extends Base {
         header('Content-Type:image/png');
         $res = QrcodeService::getwxacodeunlimit('22', '480');
         echo $res;
+        exit();
     }
 
     public function createwxaqrcode() {
@@ -24,5 +26,6 @@ class QrcodeController extends Base {
         header('Content-Type:image/png');
         $res = QrcodeService::createwxaqrcode('/pages/index/index', '480');
         echo $res;
+        exit();
     }
 }
