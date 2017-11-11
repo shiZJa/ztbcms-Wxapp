@@ -49,6 +49,11 @@ class WxpayService extends BaseService {
         }
     }
 
+    /**
+     *
+     * @deprecated
+     * @param $callback
+     */
     public function pay_notify($callback) {
         $request = file_get_contents("php://input");
         $res = Util::xmlToArray($request);
