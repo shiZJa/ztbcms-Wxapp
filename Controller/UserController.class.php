@@ -5,7 +5,6 @@ namespace Wxapp\Controller;
 use Common\Controller\Base;
 use Wxapp\Service\ParseRequestService;
 use Wxapp\Service\WxappService;
-use Wxapp\Service\UserinfoService;
 
 class UserController extends Base {
 

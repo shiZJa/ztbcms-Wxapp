@@ -28,7 +28,8 @@ class OpenController extends AdminBase {
             ];
             $res = OpenService::modifyDomain($appid, 'add', $data);
 
-            return $this->ajaxReturn($res);
+            $this->ajaxReturn($res);
+            return;
         }
         $this->assign('appid', $appid);
         $this->display('adddomain');
@@ -42,7 +43,8 @@ class OpenController extends AdminBase {
 
             $res = OpenService::modifyDomain($appid, 'delete', [$key => $domain]);
 
-            return $this->ajaxReturn($res);
+            $this->ajaxReturn($res);
+            return;
         }
     }
 
