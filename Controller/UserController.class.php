@@ -3,6 +3,7 @@
 namespace Wxapp\Controller;
 
 use Common\Controller\Base;
+use Wxapp\Service\LoginService;
 use Wxapp\Service\ParseRequestService;
 use Wxapp\Service\WxappService;
 
@@ -16,7 +17,8 @@ class UserController extends Base {
      */
     public function login() {
         $wxapp = new WxappService();
-        $res = $wxapp->login();
+        $appid = LoginService::getHttpHeader('APPID');
+        $res = $wxapp->login($appid ? $appid : null);
         if ($res['status']) {
             $userInfo = $res['data']['userInfo'];
 
@@ -32,7 +34,6 @@ class UserController extends Base {
 
                 //注册 cms 账号
                 $userid = service("Passport")->userRegister($info['username'], $info['password'], $info['email']);
-
 
                 $data = [
                     'nickname' => $userInfo['nickName'],

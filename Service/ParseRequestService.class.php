@@ -34,12 +34,13 @@ class ParseRequestService extends BaseService {
                         if (isset($json_decode['interface']['para']['code']) && isset($json_decode['interface']['para']['encrypt_data'])) {
                             $code = $json_decode['interface']['para']['code'];
                             $encrypt_data = $json_decode['interface']['para']['encrypt_data'];
+                            $appid = $json_decode['interface']['para']['appid'];
                             $auth = new Auth();
                             if (!isset($json_decode['interface']['para']['iv'])) {
-                                $ret = $auth->get_id_skey($code, $encrypt_data);
+                                $ret = $auth->get_id_skey($appid, $code, $encrypt_data);
                             } else {
                                 $iv = $json_decode['interface']['para']['iv'];
-                                $ret = $auth->get_id_skey($code, $encrypt_data, $iv);
+                                $ret = $auth->get_id_skey($appid, $code, $encrypt_data, $iv);
                             }
                         } else {
                             $ret['returnCode'] = ReturnCode::MA_PARA_ERR;
@@ -51,8 +52,9 @@ class ParseRequestService extends BaseService {
                             if (isset($json_decode['interface']['para']['id']) && isset($json_decode['interface']['para']['skey'])) {
                                 $id = $json_decode['interface']['para']['id'];
                                 $skey = $json_decode['interface']['para']['skey'];
+                                $appid = $json_decode['interface']['para']['appid'];
                                 $auth = new Auth();
-                                $ret = $auth->auth($id, $skey);
+                                $ret = $auth->auth($appid, $id, $skey);
                             } else {
                                 $ret['returnCode'] = ReturnCode::MA_PARA_ERR;
                                 $ret['returnMessage'] = 'PARA_ERR';
@@ -87,6 +89,7 @@ class ParseRequestService extends BaseService {
         }
         $ret['version'] = 1;
         $ret['componentName'] = "MA";
+
 //        log_message("info", json_encode($ret));
 
         return json_encode($ret);
