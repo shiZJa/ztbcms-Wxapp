@@ -67,18 +67,20 @@ class WxappService extends BaseService {
         if ($isAuthor) {
             $res = OpenService::login($appid);
         } else {
-            $res = LoginService::login();
+            $res = LoginService::login($appid);
         }
+
         return $res;
     }
 
     /**
      * 获取用户信息sdk
      *
+     * @param $appid
      * @return array
      */
-    public function check() {
-        $res = LoginService::check();
+    public function check($appid = null) {
+        $res = LoginService::check($appid);
         if ($res['code'] == 0) {
             //获取登录信息成功
             return self::createReturn(true, $res['data']['userInfo'], 'ok');

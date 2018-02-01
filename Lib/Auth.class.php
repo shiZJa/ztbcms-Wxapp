@@ -16,15 +16,17 @@ class Auth {
     }
 
     /**
+     *
      * 描述：登录校验，返回id和skey
      *
+     * @param        $appid
      * @param        $code
      * @param        $encrypt_data
      * @param string $iv
      * @return mixed
      */
-    public function get_id_skey($code, $encrypt_data, $iv = "old") {
-        $cappinfo_data = CappinfoService::getAppInfo()['data'];
+    public function get_id_skey($appid, $code, $encrypt_data, $iv = "old") {
+        $cappinfo_data = CappinfoService::getAppInfo($appid)['data'];
         if (empty($cappinfo_data) || ($cappinfo_data == false)) {
             $ret['returnCode'] = ReturnCode::MA_NO_APPID;
             $ret['returnMessage'] = 'NO_APPID';
@@ -36,6 +38,7 @@ class Auth {
             $url = 'https://api.weixin.qq.com/sns/jscode2session?appid=' . $appid . '&secret=' . $secret . '&js_code=' . $code . '&grant_type=authorization_code';
             $http_util = new HttpUtil();
             $return_message = $http_util->http_get($url);
+
             if ($return_message != false) {
                 $json_message = json_decode($return_message, true);
                 if (isset($json_message['openid']) && isset($json_message['session_key'])) {
@@ -83,6 +86,7 @@ class Auth {
                             $arr_result['id'] = $id;
                             $arr_result['skey'] = $skey;
                             $arr_result['user_info'] = $user_info_arr;
+                            $arr_result['duration'] = $json_message['expires_in'];
                             $ret['returnCode'] = ReturnCode::MA_OK;
                             $ret['returnMessage'] = 'NEW_SESSION_SUCCESS';
                             $ret['returnData'] = $arr_result;
@@ -95,6 +99,7 @@ class Auth {
                                 $arr_result['id'] = $change_result;
                                 $arr_result['skey'] = $skey;
                                 $arr_result['user_info'] = $user_info_arr;
+                                $arr_result['duration'] = $json_message['expires_in'];
                                 $ret['returnCode'] = ReturnCode::MA_OK;
                                 $ret['returnMessage'] = 'UPDATE_SESSION_SUCCESS';
                                 $ret['returnData'] = $arr_result;
@@ -118,19 +123,20 @@ class Auth {
                 $ret['returnData'] = '';
             }
         }
-        UserinfoService ::updateInfo($user_info_arr,$appid);
+        UserinfoService::updateInfo($user_info_arr, $appid);
+
         return $ret;
     }
 
     /**
+     * @param $appid
      * @param $id
      * @param $skey
-     * @return bool
-     * 描述：登录态验证
+     * @return mixed
      */
-    public function auth($id, $skey) {
+    public function auth($appid, $id, $skey) {
         //根据Id和skey 在cSessionInfo中进行鉴权，返回鉴权失败和密钥过期
-        $cappinfo_data = CappinfoService::getAppInfo()['data'];
+        $cappinfo_data = CappinfoService::getAppInfo($appid)['data'];
         if (empty($cappinfo_data) || ($cappinfo_data == false)) {
             $ret['returnCode'] = ReturnCode::MA_NO_APPID;
             $ret['returnMessage'] = 'NO_APPID';
