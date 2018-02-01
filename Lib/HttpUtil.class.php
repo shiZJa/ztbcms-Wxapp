@@ -88,12 +88,13 @@ class HttpUtil {
     }
 
     /**
-     *  GET 请求
+     * GET 请求
      *
-     * @param $url
+     * @param       $url
+     * @param array $params
      * @return bool|mixed
      */
-    public function http_get($url, $params) {
+    public function http_get($url, $params = []) {
         $oCurl = curl_init();
         if (stripos($url, "https://") !== false) {
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, false);

@@ -45,7 +45,7 @@ class UserController extends Base {
                 ];
                 D('Member')->where("userid='%d'", $userid)->save($data);
             }
-            $this->ajaxReturn($res['data']);
+            $this->ajaxReturn($res);
         } else {
             $this->ajaxReturn($res);
         }
