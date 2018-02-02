@@ -13,8 +13,8 @@ class AuthAPI {
         return self::sendRequest(Constants::INTERFACE_LOGIN, $param);
     }
 
-    public static function checkLogin($id, $skey) {
-        $param = compact('id', 'skey');
+    public static function checkLogin($appid, $id, $skey) {
+        $param = compact('appid', 'id', 'skey');
 
         return self::sendRequest(Constants::INTERFACE_CHECK, $param);
     }

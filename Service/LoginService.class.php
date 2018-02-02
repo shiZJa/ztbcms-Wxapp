@@ -37,12 +37,12 @@ class LoginService extends BaseService {
         }
     }
 
-    public static function check() {
+    public static function check($appid) {
         try {
             $id = self::getHttpHeader(Constants::WX_HEADER_ID);
             $skey = self::getHttpHeader(Constants::WX_HEADER_SKEY);
 
-            $checkResult = AuthAPI::checkLogin($id, $skey);
+            $checkResult = AuthAPI::checkLogin($appid,$id, $skey);
 
             return array(
                 'code' => 0,
