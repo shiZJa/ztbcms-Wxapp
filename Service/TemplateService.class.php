@@ -54,6 +54,7 @@ class TemplateService extends BaseService {
      * @param        $data             模板详细新消息
      * @param string $color
      * @param string $emphasis_keyword 模板需要放大的关键词，不填则默认无放大
+     * @param string $appid            模板需要放大的关键词，不填则默认无放大
      * @return array
      */
     static function sendTemplate(
@@ -63,7 +64,8 @@ class TemplateService extends BaseService {
         $page_url,
         $data,
         $color = '',
-        $emphasis_keyword = ''
+        $emphasis_keyword = '',
+        $appid = null
     ) {
         $data = [
             'touser' => $openid,
@@ -74,7 +76,7 @@ class TemplateService extends BaseService {
             'color' => $color,
             'emphasis_keyword' => $emphasis_keyword
         ];
-        $token_res = WxappService::getAccessToken();
+        $token_res = WxappService::getAccessToken($appid);
         if ($token_res['status']) {
             $token = $token_res['data'];
             $url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' . $token;
