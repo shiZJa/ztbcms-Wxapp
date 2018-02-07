@@ -19,10 +19,11 @@ class WxappService extends BaseService {
     /**
      * 获取access_token
      *
-     * @return array
+     * @param null $appid
+     * @return mixed
      */
-    static function getAccessToken() {
-        $app = CappinfoService::getAppInfo()['data'];
+    static function getAccessToken($appid = null) {
+        $app = CappinfoService::getAppInfo($appid)['data'];
         if (time() < $app['expires_in'] + $app['get_access_token_time'] - 600) {
             //还没有到过期时间
             return self::createReturn(true, $app['access_token'], '');
