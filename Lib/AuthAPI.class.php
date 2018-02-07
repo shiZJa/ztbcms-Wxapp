@@ -7,8 +7,8 @@ use Think\Log;
 use Wxapp\Helper\Request as Request;
 
 class AuthAPI {
-    public static function login($code, $encrypt_data, $iv) {
-        $param = compact('code', 'encrypt_data', 'iv');
+    public static function login($appid, $code, $encrypt_data, $iv) {
+        $param = compact('code', 'encrypt_data', 'iv', 'appid');
 
         return self::sendRequest(Constants::INTERFACE_LOGIN, $param);
     }

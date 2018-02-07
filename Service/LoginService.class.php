@@ -12,13 +12,13 @@ use Wxapp\Lib\LoginServiceException;
 
 
 class LoginService extends BaseService {
-    public static function login() {
+    public static function login($appid) {
         try {
             $code = self::getHttpHeader(Constants::WX_HEADER_CODE);
             $encryptedData = self::getHttpHeader(Constants::WX_HEADER_ENCRYPTED_DATA);
             $iv = self::getHttpHeader(Constants::WX_HEADER_IV);
 
-            $loginResult = AuthAPI::login($code, $encryptedData, $iv);
+            $loginResult = AuthAPI::login($appid, $code, $encryptedData, $iv);
 
             $result = array();
             $result[Constants::WX_SESSION_MAGIC_ID] = 1;
