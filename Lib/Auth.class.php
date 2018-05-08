@@ -12,9 +12,6 @@ use Wxapp\Service\UserinfoService;
 
 class Auth {
 
-    public function __construct() {
-    }
-
     /**
      *
      * 描述：登录校验，返回id和skey
@@ -154,45 +151,6 @@ class Auth {
                 $ret['returnMessage'] = 'AUTH_FAIL';
                 $ret['returnData'] = '';
             }
-        }
-
-        return $ret;
-    }
-
-    /**
-     * @param $id
-     * @param $skey
-     * @param $encrypt_data
-     * @return bool|string
-     * 描述：解密数据
-     */
-    public function decrypt($id, $skey, $encrypt_data) {
-        //1、根据id和skey获取session_key。
-        //2、session_key获取成功则正常解密,可能解密失败。
-        //3、获取不成功则解密失败。
-        $csessioninfo_service = new CsessioninfoService();
-        $params = array(
-            "id" => $id,
-            "skey" => $skey
-        );
-        $result = $csessioninfo_service->select_csessioninfo($params);
-        if ($result !== false && count($result) != 0 && isset($result['session_key'])) {
-            $session_key = $result['session_key'];
-            $decrypt_data = new DecryptData();
-            $data = $decrypt_data->aes128cbc_Decrypt($encrypt_data, $session_key);
-            if ($data !== false) {
-                $ret['returnCode'] = ReturnCode::MA_OK;
-                $ret['returnMessage'] = 'DECRYPT_SUCCESS';
-                $ret['returnData'] = $data;
-            } else {
-                $ret['returnCode'] = ReturnCode::MA_DECRYPT_ERR;
-                $ret['returnMessage'] = 'GET_SESSION_KEY_SUCCESS_BUT_DECRYPT_FAIL';
-                $ret['returnData'] = '';
-            }
-        } else {
-            $ret['returnCode'] = ReturnCode::MA_DECRYPT_ERR;
-            $ret['returnMessage'] = 'GET_SESSION_KEY_FAIL';
-            $ret['returnData'] = '';
         }
 
         return $ret;

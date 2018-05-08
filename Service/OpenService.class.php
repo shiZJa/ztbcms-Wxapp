@@ -326,7 +326,6 @@ class OpenService extends BaseService {
                 if ($ret['returnCode'] == 0) {
                     $data = $ret['returnData'];
                     $res_data = [
-                        Constants::WX_SESSION_MAGIC_ID => 1,
                         'session' => ['id' => $data['id'], 'skey' => $data['skey']],
                         'userInfo' => $data['user_info']
                     ];
