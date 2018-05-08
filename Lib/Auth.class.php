@@ -48,19 +48,10 @@ class Auth {
                     $last_visit_time = date('Y-m-d H:i:s', time());
                     $openid = $json_message['openid'];
                     $session_key = $json_message['session_key'];
-                    $errCode = 0;
                     $user_info = false;
-                    //兼容旧的解密算法
-                    if ($iv == "old") {
-                        $decrypt_data = new DecryptData();
-                        $user_info = $decrypt_data->aes128cbc_Decrypt($encrypt_data, $session_key);
-                        log_message("INFO", "userinfo:" . $user_info);
-                        $user_info = base64_encode($user_info);
-                    } else {
-                        $pc = new WXBizDataCrypt($appid, $session_key);
-                        $errCode = $pc->decryptData($encrypt_data, $iv, $user_info);
-                        $user_info = base64_encode($user_info);
-                    }
+                    $pc = new WXBizDataCrypt($appid, $session_key);
+                    $errCode = $pc->decryptData($encrypt_data, $iv, $user_info);
+                    $user_info = base64_encode($user_info);
                     if ($user_info === false || $errCode !== 0) {
                         $ret['returnCode'] = ReturnCode::MA_DECRYPT_ERR;
                         $ret['returnMessage'] = 'DECRYPT_FAIL';

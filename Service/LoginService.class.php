@@ -19,17 +19,17 @@ class LoginService extends BaseService {
             $iv = self::getHttpHeader(Constants::WX_HEADER_IV);
 
             $loginResult = AuthAPI::login($appid, $code, $encryptedData, $iv);
-
-            $result = array();
-            $result[Constants::WX_SESSION_MAGIC_ID] = 1;
-            $result['session'] = array(
-                'id' => $loginResult['id'],
-                'skey' => $loginResult['skey'],
-            );
-            $result['userInfo'] = $loginResult['user_info'];
-
-            return self::createReturn(true, $result, 'ok');
-
+            if ($loginResult['returnCode'] == 0) {
+                $result = array();
+                $result['session'] = array(
+                    'id' => $loginResult['returnData']['id'],
+                    'skey' => $loginResult['returnData']['skey'],
+                );
+                $result['userInfo'] = $loginResult['returnData']['user_info'];
+                return self::createReturn(true, $result, 'ok');
+            } else {
+                return self::createReturn(false, $loginResult, $loginResult['returnMessage']);
+            }
         } catch (Exception $e) {
             $error = new LoginServiceException(Constants::ERR_LOGIN_FAILED, $e->getMessage());
 
@@ -42,7 +42,7 @@ class LoginService extends BaseService {
             $id = self::getHttpHeader(Constants::WX_HEADER_ID);
             $skey = self::getHttpHeader(Constants::WX_HEADER_SKEY);
 
-            $checkResult = AuthAPI::checkLogin($appid,$id, $skey);
+            $checkResult = AuthAPI::checkLogin($appid, $id, $skey);
 
             return array(
                 'code' => 0,
