@@ -68,7 +68,7 @@ class Auth {
 
                         $csessioninfo_service = new CsessioninfoService();
                         $change_result = $csessioninfo_service->change_csessioninfo($params);
-                        $user_info_arr = json_decode(base64_decode($user_info), 1);
+                        $user_info_arr = json_decode(base64_decode($user_info), true);
                         if ($change_result) {
                             $id = $csessioninfo_service->get_id_csessioninfo($openid);
                             $arr_result['id'] = $id;
@@ -142,7 +142,7 @@ class Auth {
             $csessioninfo_service = new CsessioninfoService();
             $auth_result = $csessioninfo_service->check_session_for_auth($params);
             if ($auth_result !== false) {
-                $arr_result['user_info'] = json_decode(base64_decode($auth_result));
+                $arr_result['user_info'] = json_decode(base64_decode($auth_result), true);
                 $ret['returnCode'] = ReturnCode::MA_OK;
                 $ret['returnMessage'] = 'AUTH_SUCCESS';
                 $ret['returnData'] = $arr_result;
