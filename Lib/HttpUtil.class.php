@@ -101,7 +101,7 @@ class HttpUtil {
             curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, false);
         }
 
-        if (is_array($params)) {
+        if (is_array($params && count($params) > 0)) {
             $url .= '?';
             foreach ($params as $key => $value) {
                 $url .= $key . '=' . $value . '&';
