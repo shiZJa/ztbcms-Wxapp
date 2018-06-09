@@ -5,17 +5,9 @@
 namespace Wxapp\Service;
 
 use System\Service\BaseService;
-use Wxapp\Lib\Conf;
 use Wxapp\Lib\HttpUtil;
 
 class WxappService extends BaseService {
-    function __construct() {
-        Conf::setup([
-            'ServerHost' => $_SERVER['HTTP_HOST'],
-            'AuthServerUrl' => U('Wxapp/User/minaAuth'),
-        ]);
-    }
-
     /**
      * 获取access_token
      *
