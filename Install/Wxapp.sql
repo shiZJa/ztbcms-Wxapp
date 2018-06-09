@@ -71,6 +71,8 @@ CREATE TABLE `cms_wxapp_template_from` (
   `from_type` varchar(64) NOT NULL DEFAULT '' COMMENT '来源类型',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `send_count` tinyint(1) NOT NULL DEFAULT '0' COMMENT '已经发送次数,支付类型可以发送3次',
+  `appid` varchar(200) DEFAULT '',
+  `result` text COMMENT '发送返回的结果',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 
