@@ -16,6 +16,9 @@ CREATE TABLE `cms_wxapp_appinfo` (
   `nick_name` varchar(32) NOT NULL DEFAULT '' COMMENT '小程序名称',
   `head_img` varchar(256) NOT NULL DEFAULT '' COMMENT '小程序头像',
   `principal_name` varchar(32) NOT NULL DEFAULT '' COMMENT '主体信息',
+  `access_token` varchar(256) DEFAULT '',
+  `expires_in` int(11) DEFAULT '0',
+  `get_access_token_time` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -68,6 +71,8 @@ CREATE TABLE `cms_wxapp_template_from` (
   `from_type` varchar(64) NOT NULL DEFAULT '' COMMENT '来源类型',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `send_count` tinyint(1) NOT NULL DEFAULT '0' COMMENT '已经发送次数,支付类型可以发送3次',
+  `appid` varchar(200) DEFAULT '',
+  `result` text COMMENT '发送返回的结果',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
 

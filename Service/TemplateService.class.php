@@ -29,12 +29,13 @@ class TemplateService extends BaseService {
         }
     }
 
-    static function addTemplateFrom($openid, $form_id, $from_type) {
+    static function addTemplateFrom($openid, $form_id, $from_type, $appid = '') {
         $data = [
             'openid' => $openid,
             'form_id' => $form_id,
             'from_type' => $from_type,
-            'create_time' => time()
+            'create_time' => time(),
+            'appid' => $appid
         ];
         $res = M(self::TABLE_NAME)->add($data);
         if ($res) {

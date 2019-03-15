@@ -12,9 +12,6 @@ use Wxapp\Service\UserinfoService;
 
 class Auth {
 
-    public function __construct() {
-    }
-
     /**
      *
      * 描述：登录校验，返回id和skey
@@ -48,19 +45,10 @@ class Auth {
                     $last_visit_time = date('Y-m-d H:i:s', time());
                     $openid = $json_message['openid'];
                     $session_key = $json_message['session_key'];
-                    $errCode = 0;
                     $user_info = false;
-                    //兼容旧的解密算法
-                    if ($iv == "old") {
-                        $decrypt_data = new DecryptData();
-                        $user_info = $decrypt_data->aes128cbc_Decrypt($encrypt_data, $session_key);
-                        log_message("INFO", "userinfo:" . $user_info);
-                        $user_info = base64_encode($user_info);
-                    } else {
-                        $pc = new WXBizDataCrypt($appid, $session_key);
-                        $errCode = $pc->decryptData($encrypt_data, $iv, $user_info);
-                        $user_info = base64_encode($user_info);
-                    }
+                    $pc = new WXBizDataCrypt($appid, $session_key);
+                    $errCode = $pc->decryptData($encrypt_data, $iv, $user_info);
+                    $user_info = base64_encode($user_info);
                     if ($user_info === false || $errCode !== 0) {
                         $ret['returnCode'] = ReturnCode::MA_DECRYPT_ERR;
                         $ret['returnMessage'] = 'DECRYPT_FAIL';
@@ -80,7 +68,7 @@ class Auth {
 
                         $csessioninfo_service = new CsessioninfoService();
                         $change_result = $csessioninfo_service->change_csessioninfo($params);
-                        $user_info_arr = json_decode(base64_decode($user_info), 1);
+                        $user_info_arr = json_decode(base64_decode($user_info), true);
                         if ($change_result) {
                             $id = $csessioninfo_service->get_id_csessioninfo($openid);
                             $arr_result['id'] = $id;
@@ -154,7 +142,7 @@ class Auth {
             $csessioninfo_service = new CsessioninfoService();
             $auth_result = $csessioninfo_service->check_session_for_auth($params);
             if ($auth_result !== false) {
-                $arr_result['user_info'] = json_decode(base64_decode($auth_result));
+                $arr_result['user_info'] = json_decode(base64_decode($auth_result), true);
                 $ret['returnCode'] = ReturnCode::MA_OK;
                 $ret['returnMessage'] = 'AUTH_SUCCESS';
                 $ret['returnData'] = $arr_result;
@@ -163,45 +151,6 @@ class Auth {
                 $ret['returnMessage'] = 'AUTH_FAIL';
                 $ret['returnData'] = '';
             }
-        }
-
-        return $ret;
-    }
-
-    /**
-     * @param $id
-     * @param $skey
-     * @param $encrypt_data
-     * @return bool|string
-     * 描述：解密数据
-     */
-    public function decrypt($id, $skey, $encrypt_data) {
-        //1、根据id和skey获取session_key。
-        //2、session_key获取成功则正常解密,可能解密失败。
-        //3、获取不成功则解密失败。
-        $csessioninfo_service = new CsessioninfoService();
-        $params = array(
-            "id" => $id,
-            "skey" => $skey
-        );
-        $result = $csessioninfo_service->select_csessioninfo($params);
-        if ($result !== false && count($result) != 0 && isset($result['session_key'])) {
-            $session_key = $result['session_key'];
-            $decrypt_data = new DecryptData();
-            $data = $decrypt_data->aes128cbc_Decrypt($encrypt_data, $session_key);
-            if ($data !== false) {
-                $ret['returnCode'] = ReturnCode::MA_OK;
-                $ret['returnMessage'] = 'DECRYPT_SUCCESS';
-                $ret['returnData'] = $data;
-            } else {
-                $ret['returnCode'] = ReturnCode::MA_DECRYPT_ERR;
-                $ret['returnMessage'] = 'GET_SESSION_KEY_SUCCESS_BUT_DECRYPT_FAIL';
-                $ret['returnData'] = '';
-            }
-        } else {
-            $ret['returnCode'] = ReturnCode::MA_DECRYPT_ERR;
-            $ret['returnMessage'] = 'GET_SESSION_KEY_FAIL';
-            $ret['returnData'] = '';
         }
 
         return $ret;

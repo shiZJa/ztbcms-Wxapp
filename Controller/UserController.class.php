@@ -4,7 +4,6 @@ namespace Wxapp\Controller;
 
 use Common\Controller\Base;
 use Wxapp\Service\LoginService;
-use Wxapp\Service\ParseRequestService;
 use Wxapp\Service\WxappService;
 
 class UserController extends Base {
@@ -59,16 +58,6 @@ class UserController extends Base {
         $wxapp = new WxappService();
         $res = $wxapp->check();
         $this->ajaxReturn($res);
-    }
-
-    /**
-     * 权限认证
-     */
-    public function minaAuth() {
-        $request = file_get_contents("php://input");
-        $parse_request = new ParseRequestService();
-        $res = $parse_request->parseJson($request);
-        echo $res;
     }
 
     /**
