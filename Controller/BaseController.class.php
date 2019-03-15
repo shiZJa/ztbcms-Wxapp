@@ -21,4 +21,8 @@ class BaseController extends Base {
             $this->userInfo = $res['data'];
         }
     }
+
+    function testLogin() {
+        $this->ajaxReturn($this->userInfo);
+    }
 }

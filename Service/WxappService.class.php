@@ -56,12 +56,7 @@ class WxappService extends BaseService {
      * @return array
      */
     public function login($appid = null) {
-        $isAuthor = cache('Config.wxapp_is_author');
-        if ($isAuthor) {
-            $res = OpenService::login($appid);
-        } else {
-            $res = LoginService::login($appid);
-        }
+        $res = LoginService::login($appid);
 
         return $res;
     }

@@ -17,13 +17,6 @@ return array(
         //子菜单列表
         "child" => array(
             array(
-                "route" => "Wxapp/Wxapp/setting",
-                "type" => 0,
-                "status" => 1,
-                "name" => "模块设置",
-                "child" => array(),
-            ),
-            array(
                 "route" => "Wxapp/Wxapp/index",
                 "type" => 0,
                 "status" => 1,
