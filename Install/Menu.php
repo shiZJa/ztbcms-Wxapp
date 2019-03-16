@@ -23,6 +23,13 @@ return array(
                 "name" => "小程序列表",
                 "child" => array(),
             ),
+            array(
+                "route" => "Wxapp/Temp/index",
+                "type" => 0,
+                "status" => 1,
+                "name" => "模板列表",
+                "child" => array(),
+            ),
         ),
     ),
 );
