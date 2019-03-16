@@ -19,17 +19,10 @@
                     <td align="center">ID</td>
                     <td align="center">appid</td>
                     <td align="center">secret</td>
-                    <if condition="$config[wxapp_is_author] eq 1">
-                        <td align="center">secret_key</td>
-                    </if>
                     <td align="center">mch_id</td>
                     <td align="center">key</td>
-                    <td align="center">login_duration</td>
-                    <td align="center">session_duration</td>
+                    <td align="center">office_appid</td>
                     <td align="center">是否默认</td>
-                    <if condition="$config[wxapp_is_author] eq 1">
-                        <td align="center">第三方平台操作</td>
-                    </if>
                     <td align="center">操作</td>
                 </tr>
                 </thead>
@@ -39,27 +32,10 @@
                         <td align="center">{{ item.id }}</td>
                         <td align="center">{{ item.appid }}</td>
                         <td align="center">{{ item.secret }}</td>
-
-                        <if condition="$config[wxapp_is_author] eq 1">
-                            <td align="center">{{ item.secret_key }}</td>
-                        </if>
                         <td align="center">{{ item.mch_id }}</td>
                         <td align="center">{{ item.key }}</td>
-                        <td align="center">{{ item.login_duration }}</td>
-                        <td align="center">{{ item.session_duration }}</td>
+                        <td align="center">{{ item.office_appid }}</td>
                         <td align="center">{{ item.is_default == 1 ? '是' : '否' }}</td>
-                        <if condition="$config[wxapp_is_author] eq 1">
-                            <td align="center">
-                                <a class="btn btn-info"
-                                   @click="openUrl('域名编辑','{:U('Wxapp/Open/domainList')}&appid='+item.appid)">域名编辑</a>
-                                <a class="btn btn-primary"
-                                   @click="openUrl('添加体验者','{:U('Wxapp/Open/addTester')}&appid='+item.appid)">添加体验者</a>
-                                <a class="btn btn-primary"
-                                   @click="openUrl('代码提交','{:U('Wxapp/Open/commit')}&appid='+item.appid)">代码提交</a>
-                                <a class="btn btn-primary"
-                                   @click="openUrl('提交审核','{:U('Wxapp/Open/submitAudit')}&appid='+item.appid)">提交审核</a>
-                            </td>
-                        </if>
                         <td align="center">
                             <a class="btn btn-info" @click="openUrl('编辑','{:U('addWxapp')}&id='+item.id)">编辑</a>
                             <a @click="deleteBtn(item.id)" class="btn btn-danger" href="javascript:;">删除</a>
@@ -92,7 +68,7 @@
                 layer.open({
                     title: title,
                     type: 2,
-                    area: ['70%', '80%'],
+                    area: ['800px', '600px'],
                     content: url,
                     end: function () {
                         location.reload()
@@ -127,12 +103,12 @@
                     data: {page: this.page, limit: this.limit},
                     dataType: 'json',
                     success: function (res) {
-                        console.log(res)
-                        var data = res.data
-                        that.lists = data.lists
-                        that.page = parseInt(data.page)
-                        that.limit = data.limit
-                        that.total = data.total
+                        console.log(res);
+                        var data = res.data;
+                        that.lists = data.lists;
+                        that.page = parseInt(data.page);
+                        that.limit = data.limit;
+                        that.total = data.total;
                         that.page_count = Math.ceil(data.total / data.limit)
                     }
                 })

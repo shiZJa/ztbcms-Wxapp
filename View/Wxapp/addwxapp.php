@@ -13,7 +13,7 @@
                     <table class="table_form" width="100%" cellspacing="0">
                         <thead>
                         <tr>
-                            <th style="width: 80px;">属性</th>
+                            <th style="width: 30px;">属性</th>
                             <th style="width: 20%;" colspan="2">当前值</th>
                         </tr>
                         </thead>
@@ -29,15 +29,6 @@
                             <td><input class="form-control" type="text" name="secret" v-model="settings.secret"></td>
                             <td></td>
                         </tr>
-                        <if condition="$config[wxapp_is_author] eq 1">
-                            <tr>
-                                <td>secret_key</td>
-                                <td><input class="form-control" type="text" name="secret_key"
-                                           v-model="settings.secret_key">
-                                </td>
-                                <td>第三方授权平台的 secret_key</td>
-                            </tr>
-                        </if>
                         <tr>
                             <td>mch_id</td>
                             <td><input class="form-control" type="text" name="mch_id" v-model="settings.mch_id">
@@ -49,16 +40,9 @@
                             <td>微信支付秘钥</td>
                         </tr>
                         <tr>
-                            <td>login_duration</td>
-                            <td><input class="form-control" type="number" name="login_duration"
-                                       v-model="settings.login_duration"></td>
-                            <td>登录实效 (单位 秒)</td>
-                        </tr>
-                        <tr>
-                            <td>session_duration</td>
-                            <td><input class="form-control" type="number" name="session_duration"
-                                       v-model="settings.session_duration"></td>
-                            <td>session实效 (单位 秒)</td>
+                            <td>office appid</td>
+                            <td><input class="form-control" type="text" name="office_appid" v-model="settings.office_appid"></td>
+                            <td>绑定微信公众号的appid</td>
                         </tr>
                         <tr>
                             <td>是否默认</td>
@@ -69,13 +53,13 @@
                                     <option value="0">否</option>
                                 </select>
                             </td>
-                            <td>session实效 (单位 秒)</td>
+                            <td>微信支付秘钥</td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="form-group">
-                    <button @click="submitBtn" class="btn btn-info">设置</button>
+                    <button @click="submitBtn" class="btn btn-info">保存</button>
                 </div>
             </form>
         </div>
@@ -99,7 +83,7 @@
                 $.post('{:U("doSetting")}', $('#form_id').serialize(), function (res) {
                     console.log(res)
                     if (res.status) {
-                        layer.msg('更新成功',{},function () {
+                        layer.msg('更新成功', {}, function () {
                             window.parent.layer.closeAll()
                         })
                     }
