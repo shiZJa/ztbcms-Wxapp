@@ -8,7 +8,6 @@
     <h3 style="margin-bottom: 20px;">
         <span>小程序列表</span>
         <span style="float: right;">
-            <a class="btn btn-primary" @click="openUrl('添加小程序','{:U('addWxapp')}')">添加</a>
         </span>
     </h3>
     <div>
@@ -17,13 +16,8 @@
                 <thead>
                 <tr class="h_a">
                     <td align="center">ID</td>
-                    <td align="center">名称</td>
                     <td align="center">appid</td>
-                    <td align="center">secret</td>
-                    <td align="center">mch_id</td>
-                    <td align="center">key</td>
-                    <td align="center">office_appid</td>
-                    <td align="center">是否默认</td>
+                    <td align="center">名称</td>
                     <td align="center">操作</td>
                 </tr>
                 </thead>
@@ -31,16 +25,10 @@
                 <template v-for="item in lists">
                     <tr>
                         <td align="center">{{ item.id }}</td>
-                        <td align="center">{{ item.nick_name }}</td>
                         <td align="center">{{ item.appid }}</td>
-                        <td align="center">{{ item.secret }}</td>
-                        <td align="center">{{ item.mch_id }}</td>
-                        <td align="center">{{ item.key }}</td>
-                        <td align="center">{{ item.office_appid }}</td>
-                        <td align="center">{{ item.is_default == 1 ? '是' : '否' }}</td>
+                        <td align="center">{{ item.nick_name }}</td>
                         <td align="center">
-                            <a class="btn btn-info" @click="openUrl('编辑','{:U('addWxapp')}&id='+item.id)">编辑</a>
-                            <a @click="deleteBtn(item.id)" class="btn btn-danger" href="javascript:;">删除</a>
+                            <a class="btn btn-info" @click="doChoose(item.id)">选择</a>
                         </td>
                     </tr>
                 </template>
@@ -66,34 +54,6 @@
             page_count: 0
         },
         methods: {
-            openUrl: function (title, url) {
-                layer.open({
-                    title: title,
-                    type: 2,
-                    area: ['800px', '600px'],
-                    content: url,
-                    end: function () {
-                        location.reload()
-                    }
-                });
-            },
-            deleteBtn: function (id) {
-                layer.confirm('是否确定删除', {}, function () {
-                    $.ajax({
-                        url: '{:U("deleteWxapp")}',
-                        data: {id: id},
-                        type: 'post',
-                        dataType: 'json',
-                        success: function (res) {
-                            if (res.status) {
-                                location.reload();
-                            } else {
-                                layer.msg(res.msg)
-                            }
-                        }
-                    })
-                })
-            },
             toPage: function (page) {
                 this.page = parseInt(page)
                 this.getList()
@@ -101,7 +61,7 @@
             getList: function () {
                 var that = this
                 $.ajax({
-                    url: '{:U("index")}',
+                    url: '{:U("Wxapp/index")}',
                     data: {page: this.page, limit: this.limit},
                     dataType: 'json',
                     success: function (res) {
@@ -114,6 +74,9 @@
                         that.page_count = Math.ceil(data.total / data.limit)
                     }
                 })
+            },
+            doChoose: function(id){
+                parent.__app.doChoose(id);
             }
         },
         mounted: function () {

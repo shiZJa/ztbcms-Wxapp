@@ -20,6 +20,11 @@
                         <tbody>
                         <input type="hidden" name="id" v-model="settings.id">
                         <tr>
+                            <td>名称</td>
+                            <td><input class="form-control" type="text" name="appid" v-model="settings.nick_name"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
                             <td>appid</td>
                             <td><input class="form-control" type="text" name="appid" v-model="settings.appid"></td>
                             <td></td>

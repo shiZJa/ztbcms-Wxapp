@@ -16,6 +16,9 @@ class TempController extends AdminBase {
         $lists = M('WxappTemplate')->page($page, $limit)->select();
         $total = M('WxappTemplate')->count();
         foreach($lists as &$item){
+            $info = M('WxappAppinfo')->where(['id' => $item['appinfo_id']])->find();
+            $item['appid'] = $info['appid'];
+            $item['mp_appid'] = $info['office_appid'];
             $item['description'] = str_replace("\n", "<br>", $item['description']);
         }
         $data = [
@@ -47,7 +50,7 @@ class TempController extends AdminBase {
         if ($result) {
             $this->ajaxReturn(self::createReturn(true, '', '操作成功'));
         } else {
-            $this->ajaxReturn(self::createReturn(false, '', ''));
+            $this->ajaxReturn(self::createReturn(false, '', $Model->getError()));
         }
     }
 
@@ -79,11 +82,12 @@ class TempController extends AdminBase {
         foreach($params as $k => $param){
             $data[$k] = ['value' => $param];
         }
-        $res = TemplateService::sendUniformTemplate($id, $openid, $data);
-        if($res['status'] == 'ok'){
-            $this->ajaxReturn(self::createReturn(true, null, '发送成功'));
-        }else{
-            $this->ajaxReturn(self::createReturn(true, null, '发送失败'));
-        }
+        $name =M('WxappTemplate')->where(['id' => $id])->getField('name');
+        $res = TemplateService::sendUniformTemplate($name, $openid, $data);
+        $this->ajaxReturn($res);
+    }
+
+    public function choose(){
+        $this->display();
     }
 }

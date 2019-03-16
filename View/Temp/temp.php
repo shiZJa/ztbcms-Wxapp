@@ -14,21 +14,23 @@
                         <tbody>
                         <input type="hidden" name="id" v-model="postData.id">
                         <tr>
-                            <td width="200">小程序appid</td>
-                            <td><input class="form-control" type="text" v-model="postData.appid"></td>
+                            <td width="200">小程序</td>
+                            <td>
+                                <a class="btn btn-primary" @click="choose">选择小程序</a>
+                            </td>
                         </tr>
                         <tr>
                             <td>模板类型</td>
                             <td>
-                                <input type="radio" id="type_1" value="1" v-model="type" @change="postData.mp_appid = ''">
-                                <label for="type_1">小程序服务通知</label>
-                                <input type="radio" id="type_2" value="2" v-model="type" @change="postData.mp_appid = ''">
-                                <label for="type_2">公众号模板消息</label>
+                                <input type="radio" id="type_1" value="1" v-model="postData.type">
+                                <label for="type_1">公众号服务通知</label>
+                                <input type="radio" id="type_2" value="2" v-model="postData.type">
+                                <label for="type_2">小程序模板消息</label>
                             </td>
                         </tr>
-                        <tr v-if="type == 2">
-                            <td>公众号appid</td>
-                            <td><input class="form-control" type="text" v-model="postData.mp_appid"></td>
+                        <tr>
+                            <td>英文名</td>
+                            <td><input class="form-control" type="text" v-model="postData.name">
                         </tr>
                         <tr>
                             <td>模板id</td>
@@ -57,16 +59,28 @@
 <script src="//cdn.bootcss.com/vue/2.1.5/vue.min.js"></script>
 <script src="//cdn.bootcss.com/layer/3.0.1/layer.js"></script>
 <script>
-    new Vue({
+    window.__app = new Vue({
         el: "#app",
         data: {
             id: '{:I("get.id")}',
-            postData: {},
-            type: ''
+            postData: {
+                appinfo_id: 0,
+                type: ''
+            },
+            app_name: '',
+            index_choose: null
         },
         methods: {
             submitBtn: function () {
                 var that = this;
+                if(that.postData.appinfo_id == 0){
+                    layer.msg('请选择小程序', {time: 1000});
+                    return;
+                }
+                if(that.postData.type == ''){
+                    layer.msg('请选择模板类型', {time: 1000});
+                    return;
+                }
                 $.post('{:U("addEditTemp")}', that.postData, function (res) {
                     if (res.status) {
                         layer.msg('更新成功', {time: 1000}, function () {
@@ -81,15 +95,24 @@
                     $.get('{:U("getTemp")}', {id: this.id}, function (res) {
                         if (res.status) {
                             that.postData = res.data;
-
-                            if(that.postData.mp_appid == ''){
-                                that.type = 1;
-                            }else{
-                                that.type = 2;
-                            }
                         }
                     }, 'json');
                 }
+            },
+            choose: function(){
+                var that = this;
+                that.index_choose = layer.open({
+                    title: '选择小程序',
+                    type: 2,
+                    area: ['80%', '80%'],
+                    content: '{:U("choose")}'
+                });
+            },
+            doChoose: function(id, title){
+                var that = this;
+                layer.close(that.index_choose);
+                that.postData.appinfo_id = id;
+                that.app_name = title;
             }
         },
         mounted: function () {

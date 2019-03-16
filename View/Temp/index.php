@@ -17,6 +17,7 @@
                 <thead>
                 <tr class="h_a">
                     <td align="center">ID</td>
+                    <td align="center">英文名</td>
                     <td align="center">小程序appid</td>
                     <td align="center">模板类型</td>
                     <td align="center">模板id</td>
@@ -29,9 +30,10 @@
                 <template v-for="item in lists">
                     <tr>
                         <td align="center">{{ item.id }}</td>
+                        <td align="center">{{ item.name }}</td>
                         <td align="center">{{ item.appid }}</td>
                         <td align="center">
-                            <template v-if="item.mp_appid != ''">
+                            <template v-if="item.type == 1">
                                 公众号模板消息<br>
                                 {{ item.mp_appid }}
                             </template>
