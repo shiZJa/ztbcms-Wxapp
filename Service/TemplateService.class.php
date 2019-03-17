@@ -95,4 +95,80 @@ class TemplateService extends BaseService {
             return $token_res;
         }
     }
+
+    /**
+     * 下发小程序和公众号统一的服务消息
+     *
+     * @param string $name          wxapp_template表name
+     * @param string $openid
+     * @param array $data
+     * @param string $wxapp_url     跳转到小程序的地址
+     * @param string $web_url       跳转到网页地址
+     * @return mixed
+     */
+    static function sendUniformTemplate($name, $openid, $data, $wxapp_url = '', $web_url = ''){
+        $temp = M('WxappTemplate')->where(['name' => $name])->find();
+
+        $token_res = WxappService::getAccessToken($temp['appid']);
+        if($token_res['status']){
+            $token = $token_res['data'];
+            $url = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=' . $token;
+            $http = new HttpUtil();
+
+            $appid = M('WxappAppinfo')->where(['id' => $temp['appinfo_id']])->getField('appid');
+            if($temp['type'] == 1){
+                $mp_appid = M('WxappAppinfo')->where(['id' => $temp['appinfo_id']])->getField('office_appid');
+                if($mp_appid){
+                    //发送公众号模板消息
+                    $mp_template_msg = [
+                        'appid' => $mp_appid,
+                        'template_id' => $temp['template_id'],
+                        'url' => $web_url,
+                        'miniprogram' => [
+                            'appid' => $appid,
+                            'pagepath' => $wxapp_url
+                        ],
+                        'data' => $data
+                    ];
+
+                    $post_data = [
+                        'touser' => $openid,
+                        'mp_template_msg' => $mp_template_msg,
+                    ];
+                    $res = json_decode($http->http_post($url, $post_data, true), 1);
+                }
+            }else{
+                $form_id = M('WxappTemplateFrom')->where(['appid' => $appid, 'openid' => $openid, 'send_count' => 0])->order('`create_time` DESC')->getField('form_id');
+                if($form_id){
+                    //发送小程序服务通知
+                    $weapp_template_msg = [
+                        'template_id' => $temp['template_id'],
+                        'page' => $wxapp_url,
+                        'form_id' => $form_id,
+                        'data' => $data,
+                        'emphasis_keyword' => '', //放大关键词: keyword1.DATA
+                    ];
+                    $post_data = [
+                        'touser' => $openid,
+                        'weapp_template_msg' => $weapp_template_msg,
+                        'mp_template_msg' => []
+                    ];
+                    $res = json_decode($http->http_post($url, $post_data, true), 1);
+
+                    if($res['errcode'] == 0){
+                        M('WxappTemplateFrom')->where(['appid' => $appid, 'openid' => $openid, 'form_id' => $form_id])->setInc('send_count');
+                    }
+                }
+            }
+
+            if($res && $res['errcode'] == 0){
+                //发送成功
+                return self::createReturn(true, null, '发送成功');
+            }else{
+                return self::createReturn(false, $res, '发送失败');
+            }
+        }else{
+            return $token_res;
+        }
+    }
 }

@@ -11,8 +11,13 @@ use Wxapp\Lib\HttpUtil;
  * @package Wxapp\Service
  */
 class WxpayService extends BaseService {
-    const CERT_PATH = SITE_PATH . 'cert/apiclient_cert.pem';
-    const KEY_PATH = SITE_PATH . 'cert/apiclient_key.pem';
+
+    static function getCertPath(){
+        return SITE_PATH . 'cert/apiclient_cert.pem';
+    }
+    static function getKeyPath(){
+        return SITE_PATH . 'cert/apiclient_key.pem';
+    }
 
     /**
      * 退款请求
@@ -38,7 +43,7 @@ class WxpayService extends BaseService {
         $data['sign'] = Util::sign($data, $appInfo['key']);
         $http = new HttpUtil();
         $post_res = $http->http_post_ssl('https://api.mch.weixin.qq.com/secapi/pay/refund', Util::arrayToXml($data),
-            self::CERT_PATH, self::KEY_PATH);
+            self::getCertPath(), self::getKeyPath());
         $res = Util::xmlToArray($post_res);
         self::updateWxpayRefundInfo($res);
         if ($res['return_code'] == 'SUCCESS' && $res['result_code'] == 'SUCCESS') {

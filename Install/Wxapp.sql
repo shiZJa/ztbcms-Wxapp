@@ -62,6 +62,21 @@ CREATE TABLE `cms_wxapp_userinfo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
+-- 小程序模板消息
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_wxapp_template`;
+CREATE TABLE `cms_wxapp_template` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` int(11) DEFAULT '' COMMENT '英文名',
+  `appinfo_id` int(11) DEFAULT '' COMMENT 'appinfo_id',
+  `type` varchar(1) DEFAULT '' COMMENT '模板类型',
+  `template_id` varchar(255) NOT NULL DEFAULT '' COMMENT '模板id',
+  `title` varchar(128) NOT NULL DEFAULT '' COMMENT '标题',
+  `description` varchar(512) NOT NULL DEFAULT '' COMMENT '描述',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
 -- 小程序发送模板消息触发的来源
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_wxapp_template_from`;
