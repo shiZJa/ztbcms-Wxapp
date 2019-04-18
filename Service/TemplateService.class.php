@@ -126,7 +126,7 @@ class TemplateService extends BaseService {
                         'url' => $web_url,
                         'miniprogram' => [
                             'appid' => $appid,
-                            'pagepath' => $wxapp_url
+                            'page' => $wxapp_url
                         ],
                         'data' => $data
                     ];
