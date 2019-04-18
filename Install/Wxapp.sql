@@ -66,8 +66,8 @@ CREATE TABLE `cms_wxapp_userinfo` (
 -- ----------------------------
 DROP TABLE IF EXISTS `cms_wxapp_template`;
 CREATE TABLE `cms_wxapp_template` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` int(11) DEFAULT '' COMMENT '英文名',
+  `id` varchar(32) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) DEFAULT '' COMMENT '英文名',
   `appinfo_id` int(11) DEFAULT '' COMMENT 'appinfo_id',
   `type` varchar(1) DEFAULT '' COMMENT '模板类型',
   `template_id` varchar(255) NOT NULL DEFAULT '' COMMENT '模板id',
